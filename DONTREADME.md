@@ -6,7 +6,7 @@
 
 > Do I have to compare and choose from a list of drafts?
 
-No. That's the tool's job. Manually comparing five slightly different drafts is a great way to lose your mind.
+No. That's the tool's job. Manually comparing slightly different drafts is a great way to lose your mind.
 
 ### Context Awareness
 
