@@ -26,12 +26,12 @@ No. This tool is for the first step of scaling, not an enterprise beast. If you'
 
 ### Resumability
 
-> Will a failed workflow re-run a completed activity?
+> Will a failed workflow re-run a completed Activity?
 
 No. If a run fails halfway through, the next run will skip what's already done.
 
 ### Observability
 
-> How can I see the status of progress?
+> How can I see the status of Workflows?
 
 Access the Temporal Web UI at `http://localhost:8233`.
