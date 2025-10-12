@@ -18,7 +18,7 @@ No. It uses your own browser's fingerprint to gather context.
 
 > Does this tool use an RDBMS?
 
-No. This tool prioritizes the flexibility of a spreadsheet. If you see a typo in a draft or want to reorganize your schema, you just do it.
+No. This tool prioritizes the flexibility of a spreadsheet. If you want to tweak your data or change the schema, you just do it.
 
 > Does this tool integrate with Salesforce?
 
