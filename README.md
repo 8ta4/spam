@@ -12,7 +12,7 @@ The subcommand is `init`.
 
 The full command is `spam init`. It spits out a new Google Sheets document with the exact schema the tool expects.
 
-> What is the `spam` subcommand for running the generation workflows?
+> What is the `spam` subcommand for running the generation Workflows?
 
 The subcommand is `run`.
 
