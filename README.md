@@ -35,3 +35,9 @@ For a message to be generated for that `endpoint`, two conditions have to be met
 - The `endpoints` sheet must have at least one row where your `endpoint` and its corresponding `prospect` are both filled in.
 
 - The `contexts` sheet must have at least one row where that same `prospect` and a `context` are both filled in.
+
+> Where do I edit the instructions for the agents?
+
+You edit instructions for each agent in the `template` column of the `agents` sheet.
+
+These templates use placeholders like `{{contexts}}` that `spam` replaces at run time. The `spam init` command spits out a spreadsheet where the template for each agent is populated with every placeholder that specific agent can use.
