@@ -6,17 +6,17 @@ Let's be honest: cold outreach is spam. Most of it is tasteless. Let's cook up s
 
 ## Usage
 
-> What's the `spam` subcommand for creating a new spreadsheet?
+> What's the `spam` subcommand for creating a spreadsheet?
 
 The subcommand is `init`.
 
-The full command is `spam init`. It spits out a new spreadsheet with the exact schema the tool expects.
+The full command is `spam init`. It creates your spreadsheet and a local project with your `config.cljs` file.
 
 > What is the `spam` subcommand for running the generation Workflows?
 
 The subcommand is `run`.
 
-The full command looks like this: `spam run <URL>`. `<URL>` is the URL of the spreadsheet you want to process.
+The full command looks like this: `spam run`.
 
 > Where do I see the generated messages?
 
@@ -36,8 +36,9 @@ For a message to be generated for that `endpoint`, two conditions have to be met
 
 - The `contexts` sheet must have at least one row where that same `prospect` and a `context` are both filled in.
 
-> Where do I edit the instructions for the agents?
+> Where do I edit the prompts for the agents?
 
-You edit instructions for each agent in the `template` column of the `agents` sheet.
+You edit the prompts for each agent in your `config.cljs` file.
 
-These templates use placeholders like `{{contexts}}` that `spam` replaces at run time. The `spam init` command spits out a spreadsheet where the template for each agent is populated with every placeholder that specific agent can use.
+The file comes with a function for generating prompts. It receives a map of data, which includes an `:agent` key. Your job is to check that key and return the right prompt string. The function is populated with examples showing every key available for each agent.
+
