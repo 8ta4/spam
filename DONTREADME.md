@@ -24,16 +24,6 @@ No. This tool prioritizes the flexibility of a spreadsheet. If you want to tweak
 
 No. This tool is for the first step of scaling, not an enterprise beast. If you're running your outreach from a spreadsheet, this is for you. If you need Salesforce, you've graduated.
 
-> Can the cells in the `template` column use spreadsheet formulas?
-
-Yes.
-
-The tool reads the value from the cell, not the formula itself. You're free to use functions like `CONCATENATE` to compose your templates from a helper sheet if you want.
-
-I could've shipped this with a helper sheet and forced you to build templates from my pre-defined components. I didn't want to build a restrictive framework I'd end up fighting.
-
-Editing a template in a spreadsheet is easy. Editing the logic in the code is not. If you need to alter the logic, you can fork the repository.
-
 ### Resumability
 
 > Will a failed workflow re-run a completed Activity?
