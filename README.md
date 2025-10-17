@@ -75,7 +75,12 @@ For a message to be generated for that `endpoint`, two conditions have to be met
 
 > Where do I edit the prompts for the agents?
 
-You edit the prompts for each agent in your `config.cljs` file.
+Your `config.cljs` file's job is to return a single JavaScript object. You edit the prompts by changing the function that's assigned to the `prompt` property.
 
-The file comes with a function for generating prompts. It receives a map of data, which includes an `:agent` key. Your job is to check that key and return the right prompt string. The function is populated with examples showing every key available for each agent.
+This function receives a JavaScript object. Your job is to check the `agent` property on that object and return the right prompt string. The `config.cljs` file that `spam init` creates for you comes with a complete example showing every property available for each agent.
 
+> Where do I change the spreadsheet URL?
+
+Your `config.cljs` file's job is to return a single JavaScript object. The URL is the value of the `spreadsheet` property in that object.
+
+The `spam init` command creates a new spreadsheet and fills this in for you automatically.
