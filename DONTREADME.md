@@ -8,6 +8,20 @@
 
 No. That's the tool's job. Manually comparing slightly different drafts is a great way to lose your mind.
 
+> Does `spam` give a send date to every message it generates?
+
+No. The `gatekeeper` agent is the last step in the workflow. If a message doesn't meet the standard, it'll be rejected instead of being given a send date.
+
+You'll see this decision recorded in the `decision` column of the `runs` sheet. That column will contain one of two things:
+
+- A date.
+
+- The keyword `rejected`.
+
+This makes the `decision` column a sum type.
+
+When you see a date, that's the recommended send date; the tool itself doesn't send anything.
+
 ### Context Awareness
 
 > Does this tool scrape pages as an anonymous bot?
