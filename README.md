@@ -2,7 +2,44 @@
 
 ## Spam Well Done
 
+> What is `spam`?
+
+`spam` is a CLI that generates outreach messages into a spreadsheet from your context.
+
 Let's be honest: cold outreach is spam. Most of it is tasteless. Let's cook up spam that's too good to ignore.
+
+## Setup
+
+> How do I set up `spam`?
+
+1. Make sure you're using a Mac with Apple silicon.
+
+1. Install Homebrew.
+
+1. Open a terminal.
+
+1. Run this command:
+   ```bash
+   brew install 8ta4/spam/spam
+   ```
+
+1. Run this command:
+   ```bash
+   mkdir -p ~/.config/spam/
+   ```
+
+1. Download a Service Account key from the Google Cloud Console.
+
+1. Rename the file you downloaded to `google-cloud.json`.
+
+1. Move that file to the `~/.config/spam/` directory.
+
+1. Copy an API key from the Google AI Studio website.
+
+1. Run this command:
+   ```bash
+   pbpaste > ~/.config/spam/google-ai-studio
+   ```
 
 ## Usage
 
