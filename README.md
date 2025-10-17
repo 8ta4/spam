@@ -65,7 +65,7 @@ Yes. An endpoint is typically an email address or a URL pointing to something li
 
 > Where do I specify which endpoints to generate messages for?
 
-You specify endpoints in the `messages` sheet by adding a new row and filling in the `endpoint` column.
+You specify endpoints in the `runs` sheet by adding a new row and filling in the `endpoint` column.
 
 For a message to be generated for that `endpoint`, two conditions have to be met:
 
