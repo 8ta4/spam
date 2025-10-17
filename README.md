@@ -14,7 +14,7 @@ Let's be honest: cold outreach is spam. Most of it is tasteless. Let's cook up s
 
 1. Make sure you're using a Mac with Apple silicon.
 
-1. Install Homebrew.
+1. Install [Homebrew](https://brew.sh/#install).
 
 1. Open a terminal.
 
