@@ -117,6 +117,8 @@ This makes the `decision` column a sum type.
 
 When you see a date, that's the recommended send date; the tool itself doesn't send anything.
 
+The `reason` column will be there to tell you why the `gatekeeper` made its call.
+
 > Where do I change the spreadsheet URL?
 
 Your `config.cljs` file's job is to return a single JavaScript object. The URL is the value of the `spreadsheet` property in that object.
