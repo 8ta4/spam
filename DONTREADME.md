@@ -42,7 +42,7 @@ When you see a date, that's the recommended send date; the tool itself doesn't s
 
 > Does this tool scrape pages as an anonymous bot?
 
-No. It uses your own browser's fingerprint to gather context.
+No. It delegates context gathering to `see`. `see` uses your own browser's fingerprint to gather context.
 
 ### Spreadsheet CRM
 
