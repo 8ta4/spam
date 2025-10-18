@@ -2,12 +2,6 @@
 
 ## Goals
 
-### Context Awareness
-
-> Does this tool scrape pages as an anonymous bot?
-
-No. It delegates context gathering to [`see`](https://github.com/8ta4/see). `see` uses your own browser's fingerprint to gather context.
-
 ### Spreadsheet CRM
 
 > Does this tool use an RDBMS?

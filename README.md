@@ -99,6 +99,10 @@ The loop stops when one of two things happens:
 
 After the tournament, an `editor` agent performs a single round of conservative edits on the winning draft.
 
+> Does this tool scrape pages as an anonymous bot?
+
+No. It delegates context gathering to [`see`](https://github.com/8ta4/see). `see` uses your own browser's fingerprint to gather context.
+
 > Does `spam` give a send date to every message it generates?
 
 No. The `gatekeeper` agent is the last step in the workflow. If a message doesn't meet the standard, it'll be rejected instead of being given a send date.
