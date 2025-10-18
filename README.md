@@ -103,6 +103,10 @@ After the tournament, an `editor` agent performs a single round of conservative 
 
 No. It delegates context gathering to [`see`](https://github.com/8ta4/see). `see` uses your own browser's fingerprint to gather context.
 
+> Does `spam` send the messages?
+
+No. When it puts a date in the `runs` sheet, that's just a recommendation.
+
 > Does `spam` give a send date to every message it generates?
 
 No. The `gatekeeper` agent is the last step in the workflow. If a message doesn't meet the standard, it'll be rejected instead of being given a send date.
@@ -114,8 +118,6 @@ You'll see this decision recorded in the `decision` column of the `runs` sheet. 
 - The keyword `rejected`.
 
 This makes the `decision` column a sum type.
-
-When you see a date, that's the recommended send date; the tool itself doesn't send anything.
 
 The `reason` column will be there to tell you why the `gatekeeper` made its call.
 
