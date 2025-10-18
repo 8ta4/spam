@@ -57,7 +57,7 @@ The full command looks like this: `spam run`.
 
 > Where do I see the generated messages?
 
-Look in the `message` column of the `messages` sheet. `spam` finds the blank message cells for any endpoint you've specified and fills them in for you.
+Look in the `message` column of the `runs` sheet. `spam` finds the blank `message` cells for any endpoint you've specified and fills them in for you.
 
 > Can an endpoint be an email address?
 
