@@ -105,21 +105,11 @@ No. It delegates context gathering to [`see`](https://github.com/8ta4/see). `see
 
 > Does `spam` send the messages?
 
-No. When it puts a date in the `runs` sheet, that's just a recommendation.
+No. Sending the messages is your job.
 
-> Does `spam` give a send date to every message it generates?
+> Do I have to send every message the tool generates?
 
-No. The `gatekeeper` agent is the last step in the workflow. If a message doesn't meet the standard, it'll be rejected instead of being given a send date.
-
-You'll see this decision recorded in the `decision` column of the `runs` sheet. That column will contain one of two things:
-
-- A date.
-
-- The keyword `rejected`.
-
-This makes the `decision` column a sum type.
-
-The `reason` column will be there to tell you why the `gatekeeper` made its call.
+No. The `gatekeeper` agent is the final check. You'll see its decision in the `approved` column of the `runs` sheet. The `reason` column will tell you why the `gatekeeper` made its call.
 
 > Where do I change the spreadsheet URL?
 
