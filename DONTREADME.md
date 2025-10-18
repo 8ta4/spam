@@ -30,7 +30,7 @@ Access the Temporal Web UI at `http://localhost:8233`.
 
 No, it's interpreted.
 
-To prevent a simple error from wasting your time on a long run, the tool first runs a quick smoke test on your `config.cljs`. After you've edited the file, a compiler could add a few seconds of compilation delay before that test could even start.
+To prevent a simple error from wasting your time on a long run, `spam run` first runs a quick smoke test on your `config.cljs`. After you've edited the file, a compiler could add a few seconds of compilation delay before that test could even start.
 
 The tool uses SCI to get around that. Now, the trade-off is that some ClojureScript libraries don't work with SCI... sigh.
 
