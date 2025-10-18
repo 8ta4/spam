@@ -8,6 +8,22 @@
 
 No. That's the tool's job. Manually comparing slightly different drafts is a great way to lose your mind.
 
+> Does `spam` generate a fixed number of drafts for each endpoint?
+
+No. The number of drafts generated depends on a competitive tournament designed to stop when the quality of the message peaks.
+
+First, two `creator` agents generate separate drafts, and a `judge` agent compares them to pick the first champion.
+
+That champion then goes into a loop of challenges. In each challenge, a `challenger` agent tries to write a better draft, and a `judge` evaluates its attempt.
+
+The loop stops when one of two things happens:
+
+- The champion wins a challenge. This signals the quality has probably plateaued.
+
+- It hits the maximum of 10 challenges. That's just a safety net to keep it from wasting your time and money.
+
+After the tournament, an `editor` agent performs a single round of conservative edits on the winning draft.
+
 > Does `spam` give a send date to every message it generates?
 
 No. The `gatekeeper` agent is the last step in the workflow. If a message doesn't meet the standard, it'll be rejected instead of being given a send date.
