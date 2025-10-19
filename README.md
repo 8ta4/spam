@@ -4,7 +4,7 @@
 
 > What is `spam`?
 
-`spam` is a CLI that generates outreach messages into a spreadsheet from your context.
+`spam` is a CLI that generates outreach messages into a spreadsheet from your source.
 
 Let's be honest: cold outreach is spam. Most of it is tasteless. Let's cook up spam that's too good to ignore.
 
@@ -71,7 +71,7 @@ For a message to be generated for that `endpoint`, two conditions have to be met
 
 - The `endpoints` sheet must have at least one row where your `endpoint` and its corresponding `prospect` are both filled in.
 
-- The `contexts` sheet must have at least one row where that same `prospect` and a `context` are both filled in.
+- The `sources` sheet must have at least one row where that same `prospect` and a `source` are both filled in.
 
 > Where do I edit the prompts for the agents?
 
@@ -101,7 +101,7 @@ After the tournament, an `editor` agent performs a single round of conservative 
 
 > Does this tool scrape pages as an anonymous bot?
 
-No. It delegates context gathering to [`see`](https://github.com/8ta4/see). `see` uses your own browser's fingerprint to gather context.
+No. It delegates source gathering to [`see`](https://github.com/8ta4/see). `see` uses your own browser's fingerprint to gather source.
 
 > Does `spam` send the messages?
 

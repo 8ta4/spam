@@ -52,7 +52,7 @@ Yes. Your `config.cljs` is a program, not just a config file. If you want a temp
 
 > Can the agents search the web?
 
-No. Letting an agent search introduces uncertainty. The tool is designed to work only from the context you provide.
+No. Letting an agent search introduces uncertainty. The tool is designed to work only from the source you provide.
 
 > Does the tool shuffle the champion message and the challenger message before the `judge` compares them?
 
