@@ -44,6 +44,8 @@ The tool uses SCI to get around that. Now, the trade-off is that some ClojureScr
 
 But a config file doesn't need the full power of ClojureScript anyway. While SCI is missing some features of the language, it's not a problem for writing a config file.
 
+## Agents
+
 > Can I use a template for the prompt?
 
 Yes. Your `config.cljs` is a program, not just a config file. If you want a template, you can write a function for it. You get the power of a language, not the constraints of some template syntax.
@@ -51,3 +53,13 @@ Yes. Your `config.cljs` is a program, not just a config file. If you want a temp
 > Can the agents search the web?
 
 No. Letting an agent search introduces uncertainty. The tool is designed to work only from the context you provide.
+
+> Does the tool shuffle the champion message and the challenger message before the `judge` compares them?
+
+Yes.
+
+Position bias is a known phenomenon where one input position can have an advantage.
+
+A message might still get lucky and win a round if it lands in the favored spot. Shuffling doesn't stop that. But shuffling prevents a positional advantage from systematically favoring either the champion or the challenger.
+
+Shuffling gives you a guarantee: The final message is either the result of two consecutive wins in a positionally unbiased competition, or the survivor of the 10-challenge tournament.
