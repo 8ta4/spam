@@ -79,7 +79,7 @@ Your `config.cljs` file's job is to return a single JavaScript object. You edit 
 
 This function receives a JavaScript object. Your job is to check the `agent` property on that object and return the right prompt string. The `config.cljs` file that `spam init` creates for you comes with a complete example showing every property available for each agent.
 
-> Do I have to compare and choose from a list of drafts?
+> Do I have to choose from a list of drafts?
 
 No. That's the tool's job. Manually comparing slightly different drafts is a great way to lose your mind.
 
