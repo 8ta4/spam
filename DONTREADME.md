@@ -74,6 +74,28 @@ The `editor`'s role is to refine the message to align with that intent.
 
 If I gave the `judge` your intent, it could corrupt its simulation of the recipient.
 
+> Can a message win the tournament based on a concept that violates my constraints, only to be corrected afterward?
+
+Yes. That can happen. It's a known vulnerability in the architecture.
+
+Here's how it plays out:
+
+1. Your constraint is to offer no discount.
+
+1. A `creator` generates a message that offers a discount.
+
+1. The `judge`, which is blind to your constraints, sees the discount as a compelling offer and selects that message over a compliant one.
+
+1. That message goes on to win the tournament.
+
+1. The post-tournament `editor` sees the violation and removes the discount to make the message compliant.
+
+1. You're left with a compliant message, but its winning concept has been gutted.
+
+Now, I could have designed the system differently. An alternative would be to run an `editor` before the `judge` sees it. That would fix this vulnerability.
+
+I chose not to do that for one reason: cost. The alternative adds an extra LLM call before every judgment.
+
 > Does the `judge` vote multiple times per challenge?
 
 No. The `judge` makes a single call for each challenge.
