@@ -68,7 +68,7 @@ Shuffling gives you a guarantee: The final message is either the result of two c
 
 No. The `judge` makes a single call for each challenge.
 
-Imagine the `judge` repeatedly selects between the same two messages, A and B. The long-run frequency with which it picks A is `p`.
+Imagine the `judge` repeatedly selects between the same two messages, `a` and `b`. The long-run frequency with which it picks `a` is `p`.
 
 First, when the messages are of similar quality, `p` is close to $\frac{1}{2}$. The risk of selecting the slightly weaker message is high, but its impact is negligible.
 
