@@ -64,6 +64,16 @@ A message might still get lucky and win a round if it lands in the favored spot.
 
 Shuffling gives you a guarantee: The final message is either the result of two consecutive wins in a positionally unbiased competition, or the survivor of the 10-challenge tournament.
 
+> Does the `judge` edit the message?
+
+No.
+
+The `judge`'s role is to simulate the recipient. A recipient is blind to your intent behind the message.
+
+The `editor`'s role is to refine the message to align with that intent.
+
+If I gave the `judge` your intent, it could corrupt its simulation of the recipient.
+
 > Does the `judge` vote multiple times per challenge?
 
 No. The `judge` makes a single call for each challenge.
