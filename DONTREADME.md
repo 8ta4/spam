@@ -6,9 +6,9 @@
 
 > What's the cost goal?
 
-The goal is $1 a message.
+The goal is $0.10 a message.
 
-This tool is for spam well done, which should be able to hit a 1% conversion rate. At that rate, you send 100 messages to get one customer. At $1 a message, you're spending $100 on this tool to land that one customer. If a customer is worth $1,000 to you, that leaves plenty of room for the rest of your sales costs.
+This tool is for spam well done, which should be able to hit a 1% conversion rate. At that rate, you send 100 messages to get one customer. At $0.10 a message, you're spending $10 on this tool to land that one customer. If a customer is worth $1,000 to you, that leaves plenty of room for the rest of your sales costs.
 
 ### Spreadsheet CRM
 
