@@ -63,3 +63,15 @@ Position bias is a known phenomenon where one input position can have an advanta
 A message might still get lucky and win a round if it lands in the favored spot. Shuffling doesn't stop that. But shuffling prevents a positional advantage from systematically favoring either the champion or the challenger.
 
 Shuffling gives you a guarantee: The final message is either the result of two consecutive wins in a positionally unbiased competition, or the survivor of the 10-challenge tournament.
+
+> Does the `judge` vote multiple times per challenge?
+
+No. The `judge` makes a single call for each challenge.
+
+Imagine the `judge` repeatedly selects between the same two messages, A and B. The long-run frequency with which it picks A is `p`.
+
+First, when the messages are of similar quality, `p` is close to $\frac{1}{2}$. The risk of selecting the slightly weaker message is high, but its impact is negligible.
+
+Second, when one message is clearly superior, `p` is far from $\frac{1}{2}$. The impact of such an error would be high because a significant improvement would be lost, but the event itself is unlikely.
+
+The choice is whether to pay the fixed cost of a majority vote on every challenge. That's just insurance against a low-probability, high-impact error. I'd rather accept the small risk than pay the insurance premium.
