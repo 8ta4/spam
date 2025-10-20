@@ -73,11 +73,11 @@ For a message to be generated for that `endpoint`, two conditions have to be met
 
 - The `sources` sheet must have at least one row where that same `prospect` and a `source` are both filled in.
 
-> Where do I edit the prompts for the agents?
+> Where do I edit the user prompts for the agents?
 
-Your `config.cljs` file's job is to return a single JavaScript object. You edit the prompts by changing the function that's assigned to the `prompt` property.
+Your `config.cljs` file's job is to return a JavaScript object. You edit user prompts in the function assigned to that object's `params` property. You set the `contents` property on the object that function returns.
 
-This function receives a JavaScript object. Your job is to check the `agent` property on that object and return the right prompt string. The `config.cljs` file that `spam init` creates for you comes with a complete example showing every property available for each agent.
+This function receives a JavaScript object. Your job is to check the `agent` property on that object and return the right set of parameters. The `config.cljs` file that `spam init` creates for you comes with a complete example showing every property available for each agent.
 
 > Do I have to choose from a list of drafts?
 
