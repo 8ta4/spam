@@ -75,9 +75,11 @@ For a message to be generated for that `endpoint`, two conditions have to be met
 
 > Where do I edit the user prompts for the agents?
 
-Your `config.cljs` file's job is to return a JavaScript object. You edit user prompts in the function assigned to that object's `params` property. You set the `contents` property on the object that function returns.
+Your `config.cljs` file's job is to return a JavaScript object. You edit user prompts in the function assigned to that object's `params` property, by setting the `contents` on the object it returns.
 
-This function receives a JavaScript object. Your job is to check the `agent` property on that object and return the right set of parameters. The `config.cljs` file that `spam init` creates for you comes with a complete example showing every property available for each agent.
+`spam` takes the object your function returns and modifies it before passing it as the `params` argument to the Google Gen AI SDK's `generateContent` function. `spam` overwrites specific parameters, like the `judge`'s `responseMimeType`, to keep the workflow from failing.
+
+The `params` function receives a JavaScript object. Your job is to check the `agent` property on that object and return the right set of parameters. The `config.cljs` file that `spam init` creates for you comes with a complete example showing every property available for each agent.
 
 > Do I have to choose from a list of drafts?
 
