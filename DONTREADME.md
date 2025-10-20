@@ -107,3 +107,9 @@ First, when the messages are of similar quality, `p` is close to $\frac{1}{2}$. 
 Second, when one message is clearly superior, `p` is far from $\frac{1}{2}$. The impact of such an error would be high because a significant improvement would be lost, but the event itself is unlikely.
 
 The choice is whether to pay the fixed cost of a majority vote on every challenge. That's just insurance against a low-probability, high-impact error. I'd rather accept the small risk than pay the insurance premium.
+
+> Does the `gatekeeper` edit the message?
+
+No. I keep the `gatekeeper` and `editor` separate.
+
+If I merged the two roles, the context for that final decision would be contaminated. The agent would have the original, pre-edited draft it was asked to fix, and potentially its own internal chain-of-thought about the edits.
