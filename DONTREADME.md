@@ -58,6 +58,12 @@ No. You don't have to choose the LLM model or other settings like temperature. S
 
 No. Letting an agent search introduces uncertainty. The tool is designed to work only from the source you provide.
 
+> Do the agents use function calling?
+
+No. Function calling is a source of uncertainty I don't want.
+
+For example, I could've given agents a function to query the spreadsheet for more context. But that's a risk. The last thing I need is an agent pulling data from the wrong prospect's row.
+
 > Does the tool shuffle the champion message and the challenger message before the `judge` compares them?
 
 Yes.
