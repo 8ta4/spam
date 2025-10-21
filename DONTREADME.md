@@ -50,7 +50,7 @@ But a config file doesn't need the full power of ClojureScript anyway. While SCI
 
 Yes. Your `config.cljs` is a program, not just a config file. If you want a template, you can write a function for it. You get the power of a language, not the constraints of some template syntax.
 
-> Can the agents search the web?
+> Do the agents search the web?
 
 No. Letting an agent search introduces uncertainty. The tool is designed to work only from the source you provide.
 
