@@ -115,6 +115,8 @@ After the tournament, an `editor` agent performs a single round of conservative 
 
 No. It delegates source gathering to [`see`](https://github.com/8ta4/see). `see` uses your own browser's fingerprint to gather source.
 
+You don't need to run `see` yourself. `spam` calls `see` automatically for you, right when it's needed to gather context.
+
 > Does `spam` send the messages?
 
 No. Sending the messages is your job.
