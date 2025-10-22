@@ -53,7 +53,7 @@ The full command is `spam init`. It creates your spreadsheet and a local project
 
 The subcommand is `run`.
 
-The full command looks like this: `spam run`.
+The full command is `spam run`.
 
 > Where do I see the generated messages?
 
