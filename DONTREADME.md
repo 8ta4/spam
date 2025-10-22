@@ -122,6 +122,12 @@ Second, when one message is clearly superior, `p` is far from $\frac{1}{2}$. The
 
 The choice is whether to pay the fixed cost of a majority vote on every challenge. That's just insurance against a low-probability, high-impact error. I'd rather accept the small risk than pay the insurance premium.
 
+> Can the `challenger` use the `judge`'s critique?
+
+Yes. A `challenger` can use the results of the preceding round.
+
+But the `challenger` doesn't get the history from any earlier rounds. The `challenger`'s job is kept simple: beat the last winner based on the latest results.
+
 > Does the `gatekeeper` edit the message?
 
 No. I keep the `gatekeeper` and `editor` separate.
