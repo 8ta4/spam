@@ -88,7 +88,7 @@ The `editor`'s role is to refine the message to align with that intent.
 
 If I gave the `judge` your intent, it could corrupt its simulation of the recipient.
 
-> Can a message win the tournament based on a concept that violates my constraints, only to be corrected afterward?
+> Can a message win the tournament based on a concept that violates my constraints, only to be corrected by the `editor` afterward?
 
 Yes. That can happen. It's a known vulnerability in the architecture.
 
