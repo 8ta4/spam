@@ -64,6 +64,10 @@ No. Function calling is a source of uncertainty I don't want.
 
 For example, I could've given agents a function to query the spreadsheet for more context. But that's a risk. The last thing I need is an agent pulling data from the wrong prospect's row.
 
+> Do the `creator` agents see each other's drafts?
+
+No. I could've made them reference each other's drafts. But that creates a mutually dependent process. Keeping them separate means the two `creator` Activities can run in parallel.
+
 > Does the tool shuffle the champion message and the challenger message before the `judge` compares them?
 
 Yes.
