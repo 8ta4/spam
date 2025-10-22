@@ -77,19 +77,19 @@ For a message to be generated for that `endpoint`, two conditions have to be met
 
 You edit them in `config.cljs`.
 
-The `spam init` command creates this file. Its job is to return a JavaScript object that acts as the configuration for your project.
+The `spam init` command creates this file. Its job is to return a map as its final expression, which acts as the configuration for your project.
 
 > Can I edit the system prompts?
 
 Yes.
 
-Inside the JavaScript object that your `config.cljs` file returns, you're looking for the `prompts` property. Its value is another object, where each property is the name of an agent, like `creator` or `judge`. You edit the `system` property for that agent, which expects a string.
+Inside the map that your `config.cljs` file returns, you're looking for the `:prompts` key. Its value is another map, where each key is the name of an agent, like `:creator` or `:judge`. You edit the `:system` key for that agent, which expects a string.
 
 > Can I edit the user prompts?
 
 Yes.
 
-The user prompt is right next to the system prompt. Inside the object for a specific agent, you'll find the `user` property. This property expects a function. This function receives a JavaScript object. Your job is to use that object to return a prompt string. The `config.cljs` file that `spam init` creates for you comes with a complete example showing every property available for each agent.
+The user prompt is right next to the system prompt. Inside the map for a specific agent, you'll find the `:user` key. This key expects a function. This function receives a map. Your job is to use that map to return a prompt string. The `config.cljs` file that `spam init` creates for you comes with a complete example showing every key available for each agent.
 
 > Do I have to choose from a list of drafts?
 
@@ -125,6 +125,6 @@ No. The `gatekeeper` agent is the final check. You'll see its decision in the `a
 
 > Where do I change the spreadsheet URL?
 
-Your `config.cljs` file's job is to return a single JavaScript object. The URL is the value of the `spreadsheet` property in that object.
+Your `config.cljs` file's job is to return a map as its final expression. The URL is the value of the `:spreadsheet` key in that map.
 
 The `spam init` command creates a new spreadsheet and fills this in for you automatically.
