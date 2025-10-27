@@ -34,6 +34,24 @@ Access the Temporal Web UI at `http://localhost:8233`.
 
 ## Architecture
 
+> Does this tool use the OAuth login?
+
+No. It uses a Service Account.
+
+The typical OAuth flow is for me to embed an official app's client ID. That's a non-starter. One bad actor could get that client ID banned, and the tool could die for everyone.
+
+The solution to that is for me to run a central server to manage the client ID. I rejected that too. It makes the tool dependent on me. It introduces a single point of failure.
+
+Another alternative is for you to provide your client ID. This puts you in a bind. You're either stuck in testing mode, where refresh tokens are designed to expire, or you wait for their verification process, which can take forever.
+
+So that leaves Service Accounts.
+
+> Does this tool require a Google Workspace account?
+
+No. I wanted this tool to work with a free Google account, so you don't need a Google Workspace account to try it out or to develop with it.
+
+The trade-off for this is a more manual setup because I haven't found a way for a new Service Account to create a spreadsheet under a free account.
+
 > Is `config.cljs` compiled?
 
 No, it's interpreted.
