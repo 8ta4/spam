@@ -56,7 +56,7 @@ Let's be honest: cold outreach is spam. Most of it is tasteless. Let's cook up s
 
 1. Run the following command to initialize your project, providing your spreadsheet's URL as the argument.
    ```bash
-   spam init "<URL>"
+   spam init <URL>
    ```
 
 > What is the `spam` subcommand for running the generation Workflows?
