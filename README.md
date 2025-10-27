@@ -43,11 +43,21 @@ Let's be honest: cold outreach is spam. Most of it is tasteless. Let's cook up s
 
 ## Usage
 
-> What's the `spam` subcommand for creating a spreadsheet?
+> How do I start a new project?
 
-The subcommand is `init`.
+1. Run the following command to copy your Service Account's email to the clipboard.
+   ```bash
+   spam email
+   ```
 
-The full command is `spam init`. It creates your spreadsheet and a local project with your `config.cljs` file.
+1. Create a new spreadsheet.
+
+1. Share the spreadsheet with the email you copied as an Editor.
+
+1. Run the following command to initialize your project, providing your spreadsheet's URL as the argument.
+   ```bash
+   spam init "<URL>"
+   ```
 
 > What is the `spam` subcommand for running the generation Workflows?
 
