@@ -62,6 +62,20 @@ The tool uses SCI to get around that. Now, the trade-off is that some ClojureScr
 
 But a config file doesn't need the full power of ClojureScript anyway. While SCI is missing some features of the language, it's not a problem for writing a config file.
 
+> Does a single Activity make multiple LLM calls?
+
+No. Each LLM call gets its own Activity.
+
+An LLM call takes time, and it might cost money. If you have two calls in one Activity and the second one fails, a standard retry would run the entire Activity. That means you're wasting time re-running the first call, and you're potentially paying for it twice.
+
+> Is the prompt passed as an argument to an Activity that calls an LLM?
+
+No. The Activity reads the `config.cljs` file when it needs the prompt.
+
+The whole point is to keep iteration low-friction. I want to be able to tweak a prompt in the config file and have the system pick it up.
+
+The audit trail is Git. Temporal gives us the timestamp of the run. If something goes wrong, I can use the timestamp to `git checkout` the exact version of the codebase.
+
 ## Agents
 
 > Can I use a template for the prompt?
