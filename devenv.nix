@@ -14,6 +14,7 @@
   packages = [
     pkgs.git
     pkgs.gitleaks
+    pkgs.nodejs_22
     pkgs.python313Packages.pre-commit-hooks
   ];
 
