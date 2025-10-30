@@ -1,6 +1,10 @@
 (ns main
   (:require
+   ["google-auth-library" :refer [JWT]]
+   ["google-spreadsheet" :refer [GoogleSpreadsheet]]
    ["nbb" :refer [loadFile]]
+   ["os" :refer [homedir]]
+   ["path" :refer [join]]
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [core :refer [path]]
@@ -28,10 +32,24 @@
   (promesa/let [js-config (loadFile "src/bridge.cljs")]
     (reset! config (js->clj js-config :keywordize-keys true))))
 
+(def google-cloud-credentials
+  (-> (homedir)
+      (join ".config/spam/google-cloud.json")
+      slurp
+      js/JSON.parse
+      (js->clj :keywordize-keys true)))
+
+(def service-account-auth
+  (JWT. (clj->js {:email (:client_email google-cloud-credentials)
+                  :key (:private_key google-cloud-credentials)
+                  :scopes ["https://www.googleapis.com/auth/spreadsheets"]})))
+
 (defn init
   [url]
   (initialize-config url)
-  (load-config))
+  (promesa/do (load-config)
+              (promesa/let [spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)]
+                (.loadInfo spreadsheet))))
 
 (defn main
   [& args]
