@@ -29,3 +29,6 @@ pom.xml.asc
 
 .hgignore
 .hg/
+
+# spam
+main.js
