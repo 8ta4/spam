@@ -1,10 +1,10 @@
 (ns main
   (:require
    ["nbb" :refer [loadFile]]
-   [cljs-node-io.core :as io :refer [slurp spit]]
+   [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [lambdaisland.uri :refer [uri]]
-   [promesa.core :as p]))
+   [promesa.core :as promesa]))
 
 (defonce config
   (atom nil))
@@ -24,7 +24,7 @@
 
 (defn load-config
   []
-  (p/let [js-config (loadFile "src/bridge.cljs")]
+  (promesa/let [js-config (loadFile "src/bridge.cljs")]
     (reset! config (js->clj js-config :keywordize-keys true))))
 
 (defn init
