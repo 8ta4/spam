@@ -22,16 +22,17 @@
         (partial string/replace (slurp "src/config.cljs") "<spreadsheet-id>")
         get-spreadsheet-id))
 
+(defn load-config
+  []
+  (p/let [js-config (loadFile "src/bridge.cljs")]
+    (reset! config (js->clj js-config :keywordize-keys true))))
+
 (defn init
   [url]
-  (initialize-config url))
+  (initialize-config url)
+  (load-config))
 
 (defn main
   [& args]
   (case (first args)
     "init" (init (last args))))
-
-(defn load-config
-  []
-  (p/let [js-config (loadFile "src/bridge.cljs")]
-    (reset! config (js->clj js-config :keywordize-keys true))))
