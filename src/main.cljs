@@ -3,6 +3,7 @@
    ["nbb" :refer [loadFile]]
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
+   [core :refer [path]]
    [lambdaisland.uri :refer [uri]]
    [promesa.core :as promesa]))
 
@@ -18,7 +19,7 @@
       (nth 3)))
 
 (def initialize-config
-  (comp (partial spit "config.cljs")
+  (comp (partial spit path)
         (partial string/replace (slurp "src/config.cljs") "<spreadsheet-id>")
         get-spreadsheet-id))
 
