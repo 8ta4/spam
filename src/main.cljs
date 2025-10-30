@@ -29,4 +29,4 @@
 
 (defn load-config
   []
-  (loadFile "config.cljs"))
+  (loadFile "src/bridge.cljs"))
