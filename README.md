@@ -19,11 +19,13 @@ Let's be honest: cold outreach is spam. Most of it is tasteless. Let's cook up s
 1. Open a terminal.
 
 1. Run this command:
+
    ```bash
    brew install 8ta4/spam/spam
    ```
 
 1. Run this command:
+
    ```bash
    mkdir -p ~/.config/spam/
    ```
@@ -46,6 +48,7 @@ Let's be honest: cold outreach is spam. Most of it is tasteless. Let's cook up s
 > How do I start a new project?
 
 1. Run the following command to copy your Service Account's email to the clipboard.
+
    ```bash
    spam email
    ```
