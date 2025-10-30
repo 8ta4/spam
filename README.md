@@ -138,6 +138,10 @@ No. Sending the messages is your job.
 
 No. The `gatekeeper` agent is the final check. You'll see its decision in the `approved` column of the `runs` sheet. The `reason` column will tell you why the `gatekeeper` made its call.
 
+> Can I use a prospect's message history in my prompts?
+
+Yes. For each `endpoint` you specify in the `runs` sheet, the tool finds the `prospect` tied to that endpoint, and pulls that prospect's message history from the `messages` sheet. The system then hands that history over to your `:user` function in `config.cljs`.
+
 > Where do I change the spreadsheet URL?
 
 Your `config.cljs` file's job is to return a map as its final expression. The URL is the value of the `:spreadsheet` key in that map.
