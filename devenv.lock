@@ -74,16 +74,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1761313199,
-        "owner": "cachix",
-        "repo": "devenv-nixpkgs",
-        "rev": "d1c30452ebecfc55185ae6d1c983c09da0c274ff",
+        "lastModified": 1761468971,
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "78e34d1667d32d8a0ffc3eba4591ff256e80576e",
         "type": "github"
       },
       "original": {
-        "owner": "cachix",
-        "ref": "rolling",
-        "repo": "devenv-nixpkgs",
+        "owner": "NixOS",
+        "ref": "nixos-25.05",
+        "repo": "nixpkgs",
         "type": "github"
       }
     },
