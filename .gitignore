@@ -41,4 +41,5 @@ pom.xml.asc
 .hg/
 
 # spam
+config.cljs
 main.js
