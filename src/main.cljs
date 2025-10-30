@@ -40,5 +40,9 @@
   (case (first args)
     "init" (init (last args))))
 
-(def google-cloud-path
-  (join (homedir) ".config/spam/google-cloud.json"))
+(def google-cloud-credentials
+  (-> (homedir)
+     (join ".config/spam/google-cloud.json")
+     slurp
+     js/JSON.parse
+     (js->clj :keywordize-keys true)))
