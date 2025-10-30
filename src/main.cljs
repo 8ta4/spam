@@ -3,7 +3,11 @@
    ["nbb" :refer [loadFile]]
    [cljs-node-io.core :as io :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
-   [lambdaisland.uri :refer [uri]]))
+   [lambdaisland.uri :refer [uri]]
+   [promesa.core :as p]))
+
+(def config
+  (atom nil))
 
 (defn get-spreadsheet-id
   [url]
@@ -29,4 +33,5 @@
 
 (defn load-config
   []
-  (loadFile "src/bridge.cljs"))
+  (p/let [js-config (loadFile "src/bridge.cljs")]
+    (reset! config (js->clj js-config :keywordize-keys true))))
