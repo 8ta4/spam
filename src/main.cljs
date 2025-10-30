@@ -6,7 +6,7 @@
    [lambdaisland.uri :refer [uri]]
    [promesa.core :as p]))
 
-(def config
+(defonce config
   (atom nil))
 
 (defn get-spreadsheet-id
