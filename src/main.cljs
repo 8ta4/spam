@@ -1,6 +1,8 @@
 (ns main
   (:require
    ["nbb" :refer [loadFile]]
+   ["os" :refer [homedir]]
+   ["path" :refer [join]]
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [core :refer [path]]
@@ -37,3 +39,6 @@
   [& args]
   (case (first args)
     "init" (init (last args))))
+
+(def google-cloud-path
+  (join (homedir) ".config/spam/google-cloud.json"))
