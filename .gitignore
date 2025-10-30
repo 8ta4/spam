@@ -1,9 +1,19 @@
+https://github.com/BetterThanTomorrow/calva/blob/5489a945011ce37c12288f3142bca8531e1e42d9/.gitignore#L82
+# Calva
+output.calva-repl
+
+# clj-kondo
+.clj-kondo/.cache
+
 # Devenv
 .devenv*
 devenv.local.nix
 
 # direnv
 .direnv
+
+# Language Server Protocol
+.lsp/.cache
 
 # pre-commit
 .pre-commit-config.yaml
