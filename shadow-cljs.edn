@@ -3,7 +3,8 @@
  ["src"]
 
  :dependencies
- [[lambdaisland/uri "1.19.155"]]
+ [[com.github.pkpkpk/cljs-node-io "2.0.339"]
+  [lambdaisland/uri "1.19.155"]]
 
  :builds
  {:main {:target :node-script

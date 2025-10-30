@@ -1,7 +1,9 @@
 (ns main
-  (:require ["nbb" :refer [loadFile]]
-            [clojure.string :refer [split]]
-            [lambdaisland.uri :refer [uri]]))
+  (:require
+   ["nbb" :refer [loadFile]]
+   [cljs-node-io.core :as io :refer [slurp spit]]
+   [clojure.string :as string :refer [split]]
+   [lambdaisland.uri :refer [uri]]))
 
 (defn get-spreadsheet-id
   [url]
@@ -11,8 +13,14 @@
       (split "/")
       (nth 3)))
 
+(def initialize-config
+  (comp (partial spit "config.cljs")
+        (partial string/replace (slurp "src/config.cljs") "<spreadsheet-id>")
+        get-spreadsheet-id))
+
 (defn init
-  [url])
+  [url]
+  (initialize-config url))
 
 (defn main
   [& args]
