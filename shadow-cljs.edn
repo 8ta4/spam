@@ -8,6 +8,6 @@
   [lambdaisland/uri "1.19.155"]]
 
  :builds
- {:main {:target :node-script
-         :main main/main
-         :output-to "main.js"}}}
+ {:main {:main main/main
+         :output-to "main.js"
+         :target :node-script}}}
