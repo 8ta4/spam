@@ -32,6 +32,9 @@
   scripts.hello.exec = ''
     echo hello from $GREET
   '';
+  scripts.spam.exec = ''
+    node target/main.js "$@"
+  '';
 
   # https://devenv.sh/basics/
   enterShell = ''
