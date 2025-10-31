@@ -9,6 +9,7 @@
   [org.flatland/ordered "1.15.12"]]
 
  :builds
- {:main {:main main/main
+ {:main {:devtools {:preloads [repl]}
+         :main main/main
          :output-to "main.js"
          :target :node-script}}}
