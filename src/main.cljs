@@ -55,7 +55,8 @@
   [url]
   (initialize-config url)
   (promesa/do (load-config)
-              (promesa/let [spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)])))
+              (promesa/let [spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)]
+                (dorun (map (fn [[k v]] (.addSheet spreadsheet (clj->js {:headerValues v :title k}))) schema)))))
 
 (defn main
   [& args]
