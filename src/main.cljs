@@ -76,8 +76,12 @@
   (initialize-config url)
   (initialize-spreadsheet))
 
+(defn run
+  [])
+
 (defn main
   [& args]
   (case (first args)
     "email" (println (:client_email google-cloud-credentials))
-    "init" (init (last args))))
+    "init" (init (last args))
+    "run" (run)))
