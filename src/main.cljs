@@ -8,6 +8,7 @@
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [core :refer [path]]
+   [flatland.ordered.map :refer [ordered-map]]
    [lambdaisland.uri :refer [uri]]
    [promesa.core :as promesa]))
 
@@ -44,12 +45,17 @@
                   :key (:private_key google-cloud-credentials)
                   :scopes ["https://www.googleapis.com/auth/spreadsheets"]})))
 
+(def schema
+  (ordered-map :endpoints [:endpoint :prospect]
+               :sources [:source :prospect]
+               :messages [:date :endpoint :message]
+               :runs [:timestamp :approved :endpoint :message :reason]))
+
 (defn init
   [url]
   (initialize-config url)
   (promesa/do (load-config)
-              (promesa/let [spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)]
-                (.loadInfo spreadsheet))))
+              (promesa/let [spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)])))
 
 (defn main
   [& args]
