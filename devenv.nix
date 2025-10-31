@@ -37,6 +37,9 @@
   enterShell = ''
     hello         # Run scripts directly
     git --version # Use packages
+    brew bundle
+    export PATH="$DEVENV_ROOT/node_modules/.bin:$PATH"
+    npm i
   '';
 
   # https://devenv.sh/tasks/
