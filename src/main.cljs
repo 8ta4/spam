@@ -61,4 +61,5 @@
 (defn main
   [& args]
   (case (first args)
+    "email" (println (:client_email google-cloud-credentials))
     "init" (init (last args))))
