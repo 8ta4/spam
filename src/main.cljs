@@ -51,14 +51,30 @@
                :messages [:date :endpoint :message]
                :runs [:timestamp :approved :endpoint :message :reason]))
 
+(def sample
+  {:endpoints [{:endpoint "contact@example.com"
+                :prospect "https://example.com"}]
+   :sources [{:source "https://example.com"
+              :prospect "https://example.com"}]
+   :messages [{:date "1/1/2000"
+               :endpoint "contact@example.com"
+               :message "Hello, this is a sample outreach message."}]
+   :runs [{:endpoint "contact@example.com"}]})
+
+(defn initialize-spreadsheet
+  []
+  (promesa/do (load-config)
+              (promesa/let [spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)]
+                (all (map (fn [[k v]] (promesa/let [sheet (.addSheet spreadsheet (clj->js {:headerValues v :title k}))]
+                                        (.addRows sheet (clj->js (k sample)))))
+                          schema))
+                (.loadInfo spreadsheet)
+                (.delete (:Sheet1 (js->clj spreadsheet.sheetsByTitle :keywordize-keys true))))))
+
 (defn init
   [url]
   (initialize-config url)
-  (promesa/do (load-config)
-              (promesa/let [spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)]
-                (all (map (fn [[k v]] (.addSheet spreadsheet (clj->js {:headerValues v :title k}))) schema))
-                (.loadInfo spreadsheet)
-                (.delete (:Sheet1 (js->clj spreadsheet.sheetsByTitle :keywordize-keys true))))))
+  (initialize-spreadsheet))
 
 (defn main
   [& args]
