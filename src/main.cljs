@@ -10,7 +10,7 @@
    [core :refer [path]]
    [flatland.ordered.map :refer [ordered-map]]
    [lambdaisland.uri :refer [uri]]
-   [promesa.core :as promesa]))
+   [promesa.core :as promesa :refer [all]]))
 
 (defonce config
   (atom nil))
@@ -56,7 +56,9 @@
   (initialize-config url)
   (promesa/do (load-config)
               (promesa/let [spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)]
-                (dorun (map (fn [[k v]] (.addSheet spreadsheet (clj->js {:headerValues v :title k}))) schema)))))
+                (all (map (fn [[k v]] (.addSheet spreadsheet (clj->js {:headerValues v :title k}))) schema))
+                (.loadInfo spreadsheet)
+                (.delete (:Sheet1 (js->clj spreadsheet.sheetsByTitle :keywordize-keys true))))))
 
 (defn main
   [& args]
