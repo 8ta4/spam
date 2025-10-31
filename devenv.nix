@@ -37,6 +37,7 @@
   enterShell = ''
     hello         # Run scripts directly
     git --version # Use packages
+    npm i
   '';
 
   # https://devenv.sh/tasks/
