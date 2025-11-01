@@ -1,6 +1,7 @@
 ;; shadow-cljs configuration
 {:source-paths
- ["src"]
+ ["src"
+  "target"]
 
  :dependencies
  [[com.github.pkpkpk/cljs-node-io "2.0.339"]

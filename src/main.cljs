@@ -1,7 +1,8 @@
 (ns main
   (:require
-   ["@temporalio/worker" :refer [Worker]]
+   ["./workflows" :refer [spam]]
    ["@temporalio/client" :refer [Client Connection]]
+   ["@temporalio/worker" :refer [Worker]]
    [app-root-path :refer [toString]]
    [child_process :refer [spawn]]
    [cljs-node-io.core :refer [slurp spit]]
@@ -96,9 +97,8 @@
                                                  :workflowsPath (path/join (toString) "target/workflows.js")}))]
     (.run worker))
   (promesa/let [connection (.connect Connection)]
-    (.workflow.execute (Client. connection) (:spam (js->clj (js/require "./workflows") :keywordize-keys true))
-                       (clj->js {:taskQueue task-queue
-                                 :workflowId "spam"}))))
+    (.workflow.execute (Client. connection) spam (clj->js {:taskQueue task-queue
+                                                           :workflowId "spam"}))))
 
 (defn main
   [& args]
