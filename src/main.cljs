@@ -2,6 +2,7 @@
   (:require
    ["@temporalio/worker" :refer [Worker]]
    [app-root-path :refer [toString]]
+   [child_process :refer [spawn]]
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [core :refer [path]]
@@ -9,6 +10,7 @@
    [google-auth-library :refer [JWT]]
    [google-spreadsheet :refer [GoogleSpreadsheet]]
    [lambdaisland.uri :refer [uri]]
+   [mount.core :refer [defstate]]
    [nbb :refer [loadFile]]
    [os :refer [homedir]]
    [path :refer [join]]
@@ -77,6 +79,10 @@
   [url]
   (initialize-config url)
   (initialize-spreadsheet))
+
+(defstate temporal
+  :start (spawn "temporal" (clj->js ["server" "start-dev"]))
+  :stop (js/process.kill (.-pid @temporal)))
 
 (defn run
   []
