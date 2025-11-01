@@ -1,7 +1,10 @@
 (ns main
   (:require
+   ["./workflows" :refer [spam]]
+   ["@temporalio/client" :refer [Client Connection]]
    ["@temporalio/worker" :refer [Worker]]
    [app-root-path :refer [toString]]
+   [child_process :refer [spawn]]
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [core :refer [path]]
@@ -9,10 +12,12 @@
    [google-auth-library :refer [JWT]]
    [google-spreadsheet :refer [GoogleSpreadsheet]]
    [lambdaisland.uri :refer [uri]]
+   [mount.core :refer [defstate start]]
    [nbb :refer [loadFile]]
    [os :refer [homedir]]
    [path :refer [join]]
    [promesa.core :as promesa]))
+
 
 (defonce config
   (atom nil))
@@ -78,10 +83,22 @@
   (initialize-config url)
   (initialize-spreadsheet))
 
+(defstate temporal
+  :start (spawn "temporal" (clj->js ["server" "start-dev"]))
+  :stop (js/process.kill (.-pid @temporal)))
+
+(def task-queue
+  "spam")
+
 (defn run
   []
-  (.create Worker (clj->js {:taskQueue "spam"
-                            :workflowsPath (path/join (toString) "target/workflows.js")})))
+  (start)
+  (promesa/let [worker (.create Worker (clj->js {:taskQueue task-queue
+                                                 :workflowsPath (path/join (toString) "target/workflows.js")}))]
+    (.run worker))
+  (promesa/let [connection (.connect Connection)]
+    (.workflow.execute (Client. connection) spam (clj->js {:taskQueue task-queue
+                                                           :workflowId "spam"}))))
 
 (defn main
   [& args]

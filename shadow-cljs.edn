@@ -1,11 +1,13 @@
 ;; shadow-cljs configuration
 {:source-paths
- ["src"]
+ ["src"
+  "target"]
 
  :dependencies
  [[com.github.pkpkpk/cljs-node-io "2.0.339"]
   [funcool/promesa "11.0.678"]
   [lambdaisland/uri "1.19.155"]
+  [mount "0.1.23"]
   [org.flatland/ordered "1.15.12"]]
 
  :builds
@@ -13,6 +15,6 @@
          :main main/main
          :output-to "target/main.js"
          :target :node-script}
-  :workflows {:exports {}
+  :workflows {:exports {:spam workflows/spam}
               :output-to "target/workflows.js"
               :target :node-library}}}
