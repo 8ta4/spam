@@ -66,8 +66,8 @@
   (promesa/do (load-config)
               (promesa/let [spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)]
                 (promesa/run! (fn [[k v]] (promesa/let [sheet (.addSheet spreadsheet (clj->js {:headerValues v :title k}))]
-                                    (.addRows sheet (clj->js (k sample)))))
-                      schema)
+                                            (.addRows sheet (clj->js (k sample)))))
+                              schema)
                 (.loadInfo spreadsheet)
                 (.delete (:Sheet1 (js->clj spreadsheet.sheetsByTitle :keywordize-keys true))))))
 
@@ -76,8 +76,12 @@
   (initialize-config url)
   (initialize-spreadsheet))
 
+(defn run
+  [])
+
 (defn main
   [& args]
   (case (first args)
     "email" (println (:client_email google-cloud-credentials))
-    "init" (init (last args))))
+    "init" (init (last args))
+    "run" (run)))

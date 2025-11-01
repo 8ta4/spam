@@ -11,5 +11,8 @@
  :builds
  {:main {:devtools {:preloads [repl]}
          :main main/main
-         :output-to "main.js"
-         :target :node-script}}}
+         :output-to "target/main.js"
+         :target :node-script}
+  :workflows {:exports {}
+              :output-to "target/workflows.js"
+              :target :node-library}}}
