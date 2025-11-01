@@ -80,7 +80,8 @@
 
 (defn run
   []
-  (.create Worker (clj->js {:taskQueue "spam"
+  (.create Worker (clj->js {:bundlerOptions {:ignoreModules ["fs" "path" "vm"]}
+                            :taskQueue "spam"
                             :workflowsPath (path/join (toString) "target/workflows.js")})))
 
 (defn main
