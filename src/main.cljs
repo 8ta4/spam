@@ -1,6 +1,7 @@
 (ns main
   (:require
    ["@temporalio/worker" :refer [Worker]]
+   [app-root-path :refer [toString]]
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [core :refer [path]]
@@ -79,7 +80,8 @@
 
 (defn run
   []
-  (.create Worker (clj->js {:taskQueue "spam"})))
+  (.create Worker (clj->js {:taskQueue "spam"
+                            :workflowsPath (path/join (toString) "target/workflows.js")})))
 
 (defn main
   [& args]
