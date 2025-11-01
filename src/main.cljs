@@ -3,6 +3,7 @@
    ["./workflows" :refer [spam]]
    ["@temporalio/client" :refer [Client Connection]]
    ["@temporalio/worker" :refer [Worker]]
+   ["kill-port" :as kill-port]
    [app-root-path :refer [toString]]
    [child_process :refer [spawn]]
    [cljs-node-io.core :refer [slurp spit]]
@@ -84,7 +85,7 @@
 
 (defstate temporal
   :start (spawn "temporal" (clj->js ["server" "start-dev"]))
-  :stop (js/process.kill (.-pid @temporal)))
+  :stop (kill-port 8233))
 
 (def task-queue
   "spam")
