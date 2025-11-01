@@ -10,7 +10,7 @@
    [google-auth-library :refer [JWT]]
    [google-spreadsheet :refer [GoogleSpreadsheet]]
    [lambdaisland.uri :refer [uri]]
-   [mount.core :refer [defstate]]
+   [mount.core :refer [defstate start]]
    [nbb :refer [loadFile]]
    [os :refer [homedir]]
    [path :refer [join]]
@@ -86,6 +86,7 @@
 
 (defn run
   []
+  (start)
   (.create Worker (clj->js {:bundlerOptions {:ignoreModules ["fs" "path" "vm"]}
                             :taskQueue "spam"
                             :workflowsPath (path/join (toString) "target/workflows.js")})))
