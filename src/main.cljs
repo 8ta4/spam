@@ -1,15 +1,15 @@
 (ns main
   (:require
-   ["google-auth-library" :refer [JWT]]
-   ["google-spreadsheet" :refer [GoogleSpreadsheet]]
-   ["nbb" :refer [loadFile]]
-   ["os" :refer [homedir]]
-   ["path" :refer [join]]
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [core :refer [path]]
    [flatland.ordered.map :refer [ordered-map]]
+   [google-auth-library :refer [JWT]]
+   [google-spreadsheet :refer [GoogleSpreadsheet]]
    [lambdaisland.uri :refer [uri]]
+   [nbb :refer [loadFile]]
+   [os :refer [homedir]]
+   [path :refer [join]]
    [promesa.core :as promesa]))
 
 (defonce config
