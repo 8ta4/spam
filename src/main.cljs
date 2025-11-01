@@ -18,7 +18,6 @@
    [path :refer [join]]
    [promesa.core :as promesa]))
 
-
 (defonce config
   (atom nil))
 
