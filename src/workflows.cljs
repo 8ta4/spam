@@ -1,1 +1,4 @@
 (ns workflows)
+
+(defn spam
+  [])

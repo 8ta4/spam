@@ -1,6 +1,7 @@
 (ns main
   (:require
    ["@temporalio/worker" :refer [Worker]]
+   ["@temporalio/client" :refer [Client Connection]]
    [app-root-path :refer [toString]]
    [child_process :refer [spawn]]
    [cljs-node-io.core :refer [slurp spit]]
@@ -15,6 +16,7 @@
    [os :refer [homedir]]
    [path :refer [join]]
    [promesa.core :as promesa]))
+
 
 (defonce config
   (atom nil))
@@ -84,12 +86,19 @@
   :start (spawn "temporal" (clj->js ["server" "start-dev"]))
   :stop (js/process.kill (.-pid @temporal)))
 
+(def task-queue
+  "spam")
+
 (defn run
   []
   (start)
-  (.create Worker (clj->js {:bundlerOptions {:ignoreModules ["fs" "path" "vm"]}
-                            :taskQueue "spam"
-                            :workflowsPath (path/join (toString) "target/workflows.js")})))
+  (promesa/let [worker (.create Worker (clj->js {:taskQueue task-queue
+                                                 :workflowsPath (path/join (toString) "target/workflows.js")}))]
+    (.run worker))
+  (promesa/let [connection (.connect Connection)]
+    (.workflow.execute (Client. connection) (:spam (js->clj (js/require "./workflows") :keywordize-keys true))
+                       (clj->js {:taskQueue task-queue
+                                 :workflowId "spam"}))))
 
 (defn main
   [& args]
