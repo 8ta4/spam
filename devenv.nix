@@ -33,7 +33,7 @@
     echo hello from $GREET
   '';
   scripts.spam.exec = ''
-    node target/main.js "$@"
+    nodemon target/main.js $@
   '';
 
   # https://devenv.sh/basics/
