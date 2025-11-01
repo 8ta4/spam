@@ -1,5 +1,6 @@
 (ns main
   (:require
+   ["@temporalio/worker" :refer [Worker]]
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [core :refer [path]]
@@ -77,7 +78,8 @@
   (initialize-spreadsheet))
 
 (defn run
-  [])
+  []
+  (.create Worker (clj->js {:taskQueue "spam"})))
 
 (defn main
   [& args]
