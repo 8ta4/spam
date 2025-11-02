@@ -9,6 +9,7 @@
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [core :refer [path]]
+   [datascript.core :refer [create-conn]]
    [flatland.ordered.map :refer [ordered-map]]
    [google-auth-library :refer [JWT]]
    [google-spreadsheet :refer [GoogleSpreadsheet]]
@@ -17,7 +18,7 @@
    [nbb :refer [loadFile]]
    [os :refer [homedir]]
    [path :refer [join]]
-   [promesa.core :as promesa]))
+   [promesa.core :as promesa :refer [all]]))
 
 (defonce config
   (atom nil))
@@ -68,15 +69,20 @@
                :message "Hello, this is a sample outreach message."}]
    :runs [{:endpoint "contact@example.com"}]})
 
+(defn get-spreadsheet
+  []
+  (promesa/let [_ (load-config)
+                spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)
+                _ (.loadInfo spreadsheet)]
+    spreadsheet))
+
 (defn initialize-spreadsheet
   []
-  (promesa/do (load-config)
-              (promesa/let [spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)]
-                (promesa/run! (fn [[k v]] (promesa/let [sheet (.addSheet spreadsheet (clj->js {:headerValues v :title k}))]
-                                            (.addRows sheet (clj->js (k sample)))))
-                              schema)
-                (.loadInfo spreadsheet)
-                (.delete (:Sheet1 (js->clj spreadsheet.sheetsByTitle :keywordize-keys true))))))
+  (promesa/let [spreadsheet (get-spreadsheet)]
+    (promesa/run! (fn [[k v]] (promesa/let [sheet (.addSheet spreadsheet (clj->js {:headerValues v :title k}))]
+                                (.addRows sheet (clj->js (k sample)))))
+                  schema)
+    (.delete (:Sheet1 (js->clj spreadsheet.sheetsByTitle :keywordize-keys true)))))
 
 (defn init
   [url]
@@ -90,8 +96,29 @@
 (def task-queue
   "spam")
 
+(def conn
+  (create-conn {:prospect/prospect {:db/unique :db.unique/identity}
+                :endpoint/endpoint {:db/unique :db.unique/identity}
+                :endpoint/prospects {:db/cardinality :db.cardinality/many
+                                     :db/valueType :db.type/ref}
+                :source/source {:db/unique :db.unique/identity}
+                :source/prospects {:db/cardinality :db.cardinality/many
+                                   :db/valueType :db.type/ref}
+                :message/date {}
+                :message/endpoint {:db/valueType :db.type/ref}
+                :message/message {}}))
+
 (defn orchestrate
-  [])
+  []
+  (promesa/let [spreadsheet (get-spreadsheet)
+                data (all (map (fn [k]
+                                 (promesa/let [rows (-> spreadsheet.sheetsByTitle
+                                                        (js->clj :keywordize-keys true)
+                                                        k
+                                                        .getRows)]
+                                   {k (map #(js->clj (.toObject %) :keywordize-keys true) rows)}))
+                               #{:endpoints :sources :messages}))]
+    (apply merge data)))
 
 (defn run
   []
