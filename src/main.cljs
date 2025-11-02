@@ -93,7 +93,8 @@
 (defn run
   []
   (start)
-  (promesa/let [worker (.create Worker (clj->js {:taskQueue task-queue
+  (promesa/let [worker (.create Worker (clj->js {:activities (clj->js {:orchestrate (fn [])})
+                                                 :taskQueue task-queue
                                                  :workflowsPath (path/join (toString) "target/workflows.js")}))]
     (.run worker))
   (promesa/let [connection (.connect Connection)]
