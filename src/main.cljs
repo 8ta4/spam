@@ -131,17 +131,19 @@
 (defn orchestrate
   []
   (promesa/let [spreadsheet (get-spreadsheet)
-                data (all (map (fn [k]
-                                 (promesa/let [rows (-> spreadsheet.sheetsByTitle
-                                                        (js->clj :keywordize-keys true)
-                                                        k
-                                                        .getRows)]
-                                   {k (map #(remove-vals empty? (js->clj (.toObject %) :keywordize-keys true)) rows)}))
-                               #{:endpoints :sources :messages :runs}))]
-    (->> data
-         (apply merge)
-         prepare-transaction-data
-         (transact! conn))))
+                sheets-data (all (map (fn [k]
+                                        (promesa/let [rows (-> spreadsheet.sheetsByTitle
+                                                               (js->clj :keywordize-keys true)
+                                                               k
+                                                               .getRows)]
+                                          {k (map #(remove-vals empty? (js->clj (.toObject %) :keywordize-keys true)) rows)}))
+                                      #{:endpoints :sources :messages :runs}))
+                spreadsheet-data (apply merge sheets-data)]
+    (transact! conn (prepare-transaction-data spreadsheet-data))
+    (->> spreadsheet-data
+         :runs
+         (remove :message)
+         (map :endpoint))))
 
 (defn run
   []
