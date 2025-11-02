@@ -130,15 +130,22 @@
 
 (defn find-sources
   [endpoint]
-  (q '[:find ?source
-       :in $ ?endpoint
-       :where
-       [?e :endpoint/endpoint ?endpoint]
-       [?e :endpoint/prospects ?p]
-       [?s :source/prospects ?p]
-       [?s :source/source ?source]]
-     @conn
-     endpoint))
+  (->> endpoint
+       (q '[:find ?source
+            :in $ ?endpoint
+            :where
+            [?e :endpoint/endpoint ?endpoint]
+            [?e :endpoint/prospects ?p]
+            [?s :source/prospects ?p]
+            [?s :source/source ?source]]
+          @conn)
+       (map first)
+       set))
+
+(defn prepare-workflow-data
+  [endpoint]
+  {:endpoint endpoint
+   :sources (find-sources endpoint)})
 
 (defn orchestrate
   []
@@ -155,7 +162,7 @@
     (->> spreadsheet-data
          :runs
          (remove :message)
-         (map :endpoint))))
+         (map (comp prepare-workflow-data :endpoint)))))
 
 (defn run
   []
