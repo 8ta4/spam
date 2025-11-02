@@ -159,7 +159,8 @@
 (defn prepare-workflow-data
   [endpoint]
   {:endpoint endpoint
-   :sources (find-sources endpoint)})
+   :sources (find-sources endpoint)
+   :messages (find-messages endpoint)})
 
 (defn orchestrate
   []
