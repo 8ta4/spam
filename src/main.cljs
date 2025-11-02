@@ -90,10 +90,13 @@
 (def task-queue
   "spam")
 
+(defn orchestrate
+  [])
+
 (defn run
   []
   (start)
-  (promesa/let [worker (.create Worker (clj->js {:activities (clj->js {:orchestrate (fn [])})
+  (promesa/let [worker (.create Worker (clj->js {:activities (clj->js {:orchestrate orchestrate})
                                                  :taskQueue task-queue
                                                  :workflowsPath (path/join (toString) "target/workflows.js")}))]
     (.run worker))
