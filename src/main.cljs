@@ -9,7 +9,7 @@
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [core :refer [path]]
-   [datascript.core :refer [create-conn transact!]]
+   [datascript.core :refer [create-conn q transact!]]
    [flatland.ordered.map :refer [ordered-map]]
    [google-auth-library :refer [JWT]]
    [google-spreadsheet :refer [GoogleSpreadsheet]]
@@ -127,6 +127,18 @@
                   :message/endpoint {:endpoint/endpoint (:endpoint row)}
                   :message/message (:message row)})
                (:messages spreadsheet-data))))
+
+(defn find-sources
+  [endpoint]
+  (q '[:find ?source
+       :in $ ?endpoint
+       :where
+       [?e :endpoint/endpoint ?endpoint]
+       [?e :endpoint/prospects ?p]
+       [?s :source/prospects ?p]
+       [?s :source/source ?source]]
+     @conn
+     endpoint))
 
 (defn orchestrate
   []
