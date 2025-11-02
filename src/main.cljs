@@ -21,7 +21,7 @@
    [promesa.core :as promesa :refer [all]]))
 
 (defonce config
-  (atom nil))
+  (atom {}))
 
 (defn get-spreadsheet-id
   [url]
