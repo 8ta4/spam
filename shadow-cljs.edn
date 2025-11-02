@@ -5,6 +5,7 @@
 
  :dependencies
  [[com.github.pkpkpk/cljs-node-io "2.0.339"]
+  [datascript "1.7.8"]
   [funcool/promesa "11.0.678"]
   [lambdaisland/uri "1.19.155"]
   [mount "0.1.23"]

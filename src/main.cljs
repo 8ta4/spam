@@ -9,6 +9,7 @@
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [core :refer [path]]
+   [datascript.core :refer [create-conn]]
    [flatland.ordered.map :refer [ordered-map]]
    [google-auth-library :refer [JWT]]
    [google-spreadsheet :refer [GoogleSpreadsheet]]
@@ -89,6 +90,18 @@
 
 (def task-queue
   "spam")
+
+(def conn
+  (create-conn {:prospect/prospect {:db/unique :db.unique/identity}
+                :endpoint/endpoint {:db/unique :db.unique/identity}
+                :endpoint/prospects {:db/cardinality :db.cardinality/many
+                                     :db/valueType :db.type/ref}
+                :source/source {:db/unique :db.unique/identity}
+                :source/prospects {:db/cardinality :db.cardinality/many
+                                   :db/valueType :db.type/ref}
+                :message/date {}
+                :message/endpoint {:db/valueType :db.type/ref}
+                :message/message {}}))
 
 (defn orchestrate
   [])
