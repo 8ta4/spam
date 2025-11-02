@@ -142,6 +142,20 @@
        (map first)
        set))
 
+(defn find-messages
+  [endpoint]
+  (->> endpoint
+       (q '[:find (pull ?m [:message/date {:message/endpoint [:endpoint/endpoint]} :message/message])
+            :in $ ?endpoint
+            :where
+            [?initial-e :endpoint/endpoint ?endpoint]
+            [?initial-e :endpoint/prospects ?p]
+            [?related-e :endpoint/prospects ?p]
+            [?m :message/endpoint ?related-e]]
+          @conn)
+       (map first)
+       (sort-by :message/date)))
+
 (defn prepare-workflow-data
   [endpoint]
   {:endpoint endpoint
