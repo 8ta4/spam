@@ -80,7 +80,10 @@
   []
   (promesa/let [spreadsheet (get-spreadsheet)]
     (promesa/run! (fn [[k v]] (promesa/let [sheet (.addSheet spreadsheet (clj->js {:headerValues v :title k}))]
-                                (.addRows sheet (clj->js (k sample)))))
+                                (->> sample
+                                     k
+                                     clj->js
+                                     (.addRows sheet))))
                   schema)
     (.delete (:Sheet1 (js->clj spreadsheet.sheetsByTitle :keywordize-keys true)))))
 
