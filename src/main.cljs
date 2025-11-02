@@ -15,6 +15,7 @@
    [google-spreadsheet :refer [GoogleSpreadsheet]]
    [lambdaisland.uri :refer [uri]]
    [mount.core :refer [defstate start]]
+   [medley.core :refer [remove-vals]]
    [nbb :refer [loadFile]]
    [os :refer [homedir]]
    [path :refer [join]]
@@ -135,8 +136,8 @@
                                                         (js->clj :keywordize-keys true)
                                                         k
                                                         .getRows)]
-                                   {k (map #(js->clj (.toObject %) :keywordize-keys true) rows)}))
-                               #{:endpoints :sources :messages}))]
+                                   {k (map #(remove-vals empty? (js->clj (.toObject %) :keywordize-keys true)) rows)}))
+                               #{:endpoints :sources :messages :runs}))]
     (->> data
          (apply merge)
          prepare-transaction-data
