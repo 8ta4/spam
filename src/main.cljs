@@ -69,14 +69,19 @@
                :message "Hello, this is a sample outreach message."}]
    :runs [{:endpoint "contact@example.com"}]})
 
-(defn initialize-spreadsheet
+(defn get-spreadsheet
   []
   (promesa/let [_ (load-config)
-                spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)]
+                spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)
+                _ (.loadInfo spreadsheet)]
+    spreadsheet))
+
+(defn initialize-spreadsheet
+  []
+  (promesa/let [spreadsheet (get-spreadsheet)]
     (promesa/run! (fn [[k v]] (promesa/let [sheet (.addSheet spreadsheet (clj->js {:headerValues v :title k}))]
                                 (.addRows sheet (clj->js (k sample)))))
                   schema)
-    (.loadInfo spreadsheet)
     (.delete (:Sheet1 (js->clj spreadsheet.sheetsByTitle :keywordize-keys true)))))
 
 (defn init
@@ -105,9 +110,7 @@
 
 (defn orchestrate
   []
-  (promesa/let [_ (load-config)
-                spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)
-                _ (.loadInfo spreadsheet)
+  (promesa/let [spreadsheet (get-spreadsheet)
                 data (all (map (fn [k]
                                  (promesa/let [rows (-> spreadsheet.sheetsByTitle
                                                         (js->clj :keywordize-keys true)
