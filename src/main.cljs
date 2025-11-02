@@ -18,7 +18,7 @@
    [nbb :refer [loadFile]]
    [os :refer [homedir]]
    [path :refer [join]]
-   [promesa.core :as promesa]))
+   [promesa.core :as promesa :refer [all]]))
 
 (defonce config
   (atom nil))
@@ -104,7 +104,18 @@
                 :message/message {}}))
 
 (defn orchestrate
-  [])
+  []
+  (promesa/let [_ (load-config)
+                spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)
+                _ (.loadInfo spreadsheet)
+                data (all (map (fn [k]
+                                 (promesa/let [rows (-> spreadsheet.sheetsByTitle
+                                                        (js->clj :keywordize-keys true)
+                                                        k
+                                                        .getRows)]
+                                   {k (map #(js->clj (.toObject %) :keywordize-keys true) rows)}))
+                               #{:endpoints :sources :messages}))]
+    (apply merge data)))
 
 (defn run
   []
