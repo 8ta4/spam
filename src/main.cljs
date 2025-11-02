@@ -9,7 +9,7 @@
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [core :refer [path]]
-   [datascript.core :refer [create-conn]]
+   [datascript.core :refer [create-conn transact!]]
    [flatland.ordered.map :refer [ordered-map]]
    [google-auth-library :refer [JWT]]
    [google-spreadsheet :refer [GoogleSpreadsheet]]
@@ -108,6 +108,22 @@
                 :message/endpoint {:db/valueType :db.type/ref}
                 :message/message {}}))
 
+(defn prepare-transaction-data
+  [spreadsheet-data]
+  (concat (map (fn [row]
+                 {:endpoint/endpoint (:endpoint row)
+                  :endpoint/prospects [{:prospect/prospect (:prospect row)}]})
+               (:endpoints spreadsheet-data))
+          (map (fn [row]
+                 {:source/source (:source row)
+                  :source/prospects [{:prospect/prospect (:prospect row)}]})
+               (:sources spreadsheet-data))
+          (map (fn [row]
+                 {:message/date (:date row)
+                  :message/endpoint {:endpoint/endpoint (:endpoint row)}
+                  :message/message (:message row)})
+               (:messages spreadsheet-data))))
+
 (defn orchestrate
   []
   (promesa/let [spreadsheet (get-spreadsheet)
@@ -118,7 +134,10 @@
                                                         .getRows)]
                                    {k (map #(js->clj (.toObject %) :keywordize-keys true) rows)}))
                                #{:endpoints :sources :messages}))]
-    (apply merge data)))
+    (->> data
+         (apply merge)
+         prepare-transaction-data
+         (transact! conn))))
 
 (defn run
   []
