@@ -6,12 +6,12 @@
 
 (defn clean
   []
-  (promesa/do (load-config)
-              (promesa/let [spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)]
-                (.addSheet spreadsheet (clj->js {:title "Sheet1"}))
-                (.loadInfo spreadsheet)
-                (->> schema
-                     keys
-                     (select-keys (js->clj spreadsheet.sheetsByTitle :keywordize-keys true))
-                     vals
-                     (run! #(.delete %))))))
+  (promesa/let [_ (load-config)
+                spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)]
+    (.addSheet spreadsheet (clj->js {:title "Sheet1"}))
+    (.loadInfo spreadsheet)
+    (->> schema
+         keys
+         (select-keys (js->clj spreadsheet.sheetsByTitle :keywordize-keys true))
+         vals
+         (run! #(.delete %)))))
