@@ -3,6 +3,7 @@
    ["./workflows" :refer [spam]]
    ["@temporalio/client" :refer [Client Connection]]
    ["@temporalio/worker" :refer [Worker]]
+   ["kill-port" :as kill-port]
    [app-root-path :refer [toString]]
    [child_process :refer [spawn]]
    [cljs-node-io.core :refer [slurp spit]]
@@ -17,7 +18,6 @@
    [os :refer [homedir]]
    [path :refer [join]]
    [promesa.core :as promesa]))
-
 
 (defonce config
   (atom nil))
@@ -85,15 +85,19 @@
 
 (defstate temporal
   :start (spawn "temporal" (clj->js ["server" "start-dev"]))
-  :stop (js/process.kill (.-pid @temporal)))
+  :stop (kill-port 8233))
 
 (def task-queue
   "spam")
 
+(defn orchestrate
+  [])
+
 (defn run
   []
   (start)
-  (promesa/let [worker (.create Worker (clj->js {:taskQueue task-queue
+  (promesa/let [worker (.create Worker (clj->js {:activities (clj->js {:orchestrate orchestrate})
+                                                 :taskQueue task-queue
                                                  :workflowsPath (path/join (toString) "target/workflows.js")}))]
     (.run worker))
   (promesa/let [connection (.connect Connection)]

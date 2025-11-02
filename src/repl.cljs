@@ -14,5 +14,4 @@
                      keys
                      (select-keys (js->clj spreadsheet.sheetsByTitle :keywordize-keys true))
                      vals
-                     (map #(.delete %))
-                     dorun))))
+                     (run! #(.delete %))))))
