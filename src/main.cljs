@@ -180,13 +180,19 @@
          (map (comp prepare-workflow-data :endpoint))
          clj->js)))
 
+(defstate worker
+  :start (let [worker* (atom nil)]
+           (promesa/let [worker** (.create Worker (clj->js {:activities (clj->js {:orchestrate orchestrate})
+                                                            :taskQueue task-queue
+                                                            :workflowsPath (path/join (toString) "target/workflows.js")}))]
+             (reset! worker* worker**)
+             (.run worker**))
+           worker*)
+  :stop (.shutdown @@worker))
+
 (defn run
   []
   (start)
-  (promesa/let [worker (.create Worker (clj->js {:activities (clj->js {:orchestrate orchestrate})
-                                                 :taskQueue task-queue
-                                                 :workflowsPath (path/join (toString) "target/workflows.js")}))]
-    (.run worker))
   (promesa/let [connection (.connect Connection)]
     (.workflow.execute (Client. connection) spam (clj->js {:taskQueue task-queue
                                                            :workflowId "spam"}))))
