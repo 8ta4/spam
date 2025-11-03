@@ -156,7 +156,7 @@
        (map first)
        (sort-by :message/date)))
 
-(defn prepare-workflow-data
+(defn prepare-contexts
   [endpoint]
   {:endpoint endpoint
    :sources (find-sources endpoint)
@@ -165,28 +165,41 @@
 (defn orchestrate
   []
   (promesa/let [spreadsheet (get-spreadsheet)
-                sheets-data (all (map (fn [k]
-                                        (promesa/let [rows (-> spreadsheet.sheetsByTitle
-                                                               (js->clj :keywordize-keys true)
-                                                               k
-                                                               .getRows)]
-                                          {k (map #(remove-vals empty? (js->clj (.toObject %) :keywordize-keys true)) rows)}))
-                                      #{:endpoints :sources :messages :runs}))
-                spreadsheet-data (apply merge sheets-data)]
+                spreadsheet-data (promesa/->> #{:endpoints :sources :messages :runs}
+                                              (map (fn [k]
+                                                     (promesa/let [rows (-> spreadsheet.sheetsByTitle
+                                                                            (js->clj :keywordize-keys true)
+                                                                            k
+                                                                            .getRows)]
+                                                       {k (map #(remove-vals empty? (js->clj (.toObject %) :keywordize-keys true)) rows)})))
+                                              all
+                                              (apply merge))]
     (transact! conn (prepare-transaction-data spreadsheet-data))
     (->> spreadsheet-data
          :runs
          (remove :message)
-         (map (comp prepare-workflow-data :endpoint))
+         (map (comp prepare-contexts :endpoint))
          clj->js)))
+
+(defn see
+  [source]
+  source)
+
+(defstate worker
+; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
+  :start (let [worker* (atom nil)]
+           (promesa/let [worker** (.create Worker (clj->js {:activities (clj->js {:orchestrate orchestrate
+                                                                                  :see see})
+                                                            :taskQueue task-queue
+                                                            :workflowsPath (path/join (toString) "target/workflows.js")}))]
+             (reset! worker* worker**)
+             (.run worker**))
+           worker*)
+  :stop (.shutdown @@worker))
 
 (defn run
   []
   (start)
-  (promesa/let [worker (.create Worker (clj->js {:activities (clj->js {:orchestrate orchestrate})
-                                                 :taskQueue task-queue
-                                                 :workflowsPath (path/join (toString) "target/workflows.js")}))]
-    (.run worker))
   (promesa/let [connection (.connect Connection)]
     (.workflow.execute (Client. connection) spam (clj->js {:taskQueue task-queue
                                                            :workflowId "spam"}))))

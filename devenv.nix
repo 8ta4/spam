@@ -37,7 +37,7 @@
     shadow-cljs release main
   '';
   scripts.spam.exec = ''
-    nodemon target/main.js $@
+    node target/main.js $@
   '';
 
   # https://devenv.sh/basics/

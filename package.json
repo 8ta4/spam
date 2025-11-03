@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "devDependencies": {
-    "nodemon": "^3.1.10",
     "shadow-cljs": "3.2.1"
   },
   "dependencies": {
