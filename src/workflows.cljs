@@ -1,9 +1,15 @@
 (ns workflows
-  (:require ["@temporalio/workflow" :refer [proxyActivities]]))
+  (:require
+   ["@temporalio/workflow" :refer [proxyActivities]]
+   [promesa.core :as promesa]))
+
+(def activities
+  (proxyActivities (clj->js {:startToCloseTimeout (* 60 1000)})))
 
 (defn spam
   []
-  (-> {:startToCloseTimeout (* 60 1000)}
-      clj->js
-      proxyActivities
-      .orchestrate))
+  (promesa/let [data (.orchestrate activities)]
+    (->> (js->clj data :keywordize-keys true)
+         (mapcat :sources)
+         distinct
+         clj->js)))
