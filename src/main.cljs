@@ -182,7 +182,8 @@
          clj->js)))
 
 (defn see
-  [source])
+  [source]
+  source)
 
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
