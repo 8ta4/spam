@@ -9,11 +9,12 @@
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [core :refer [path]]
-   [datascript.core :refer [create-conn]]
+   [datascript.core :refer [create-conn q transact!]]
    [flatland.ordered.map :refer [ordered-map]]
    [google-auth-library :refer [JWT]]
    [google-spreadsheet :refer [GoogleSpreadsheet]]
    [lambdaisland.uri :refer [uri]]
+   [medley.core :refer [remove-vals]]
    [mount.core :refer [defstate start]]
    [nbb :refer [loadFile]]
    [os :refer [homedir]]
@@ -21,7 +22,7 @@
    [promesa.core :as promesa :refer [all]]))
 
 (defonce config
-  (atom nil))
+  (atom {}))
 
 (defn get-spreadsheet-id
   [url]
@@ -80,7 +81,10 @@
   []
   (promesa/let [spreadsheet (get-spreadsheet)]
     (promesa/run! (fn [[k v]] (promesa/let [sheet (.addSheet spreadsheet (clj->js {:headerValues v :title k}))]
-                                (.addRows sheet (clj->js (k sample)))))
+                                (->> sample
+                                     k
+                                     clj->js
+                                     (.addRows sheet))))
                   schema)
     (.delete (:Sheet1 (js->clj spreadsheet.sheetsByTitle :keywordize-keys true)))))
 
@@ -108,17 +112,72 @@
                 :message/endpoint {:db/valueType :db.type/ref}
                 :message/message {}}))
 
+(defn prepare-transaction-data
+  [spreadsheet-data]
+  (concat (map (fn [row]
+                 {:endpoint/endpoint (:endpoint row)
+                  :endpoint/prospects [{:prospect/prospect (:prospect row)}]})
+               (:endpoints spreadsheet-data))
+          (map (fn [row]
+                 {:source/source (:source row)
+                  :source/prospects [{:prospect/prospect (:prospect row)}]})
+               (:sources spreadsheet-data))
+          (map (fn [row]
+                 {:message/date (:date row)
+                  :message/endpoint {:endpoint/endpoint (:endpoint row)}
+                  :message/message (:message row)})
+               (:messages spreadsheet-data))))
+
+(defn find-sources
+  [endpoint]
+  (->> endpoint
+       (q '[:find ?source
+            :in $ ?endpoint
+            :where
+            [?e :endpoint/endpoint ?endpoint]
+            [?e :endpoint/prospects ?p]
+            [?s :source/prospects ?p]
+            [?s :source/source ?source]]
+          @conn)
+       (map first)
+       set))
+
+(defn find-messages
+  [endpoint]
+  (->> endpoint
+       (q '[:find (pull ?m [:message/date {:message/endpoint [:endpoint/endpoint]} :message/message])
+            :in $ ?endpoint
+            :where
+            [?initial-e :endpoint/endpoint ?endpoint]
+            [?initial-e :endpoint/prospects ?p]
+            [?related-e :endpoint/prospects ?p]
+            [?m :message/endpoint ?related-e]]
+          @conn)
+       (map first)
+       (sort-by :message/date)))
+
+(defn prepare-workflow-data
+  [endpoint]
+  {:endpoint endpoint
+   :sources (find-sources endpoint)
+   :messages (find-messages endpoint)})
+
 (defn orchestrate
   []
   (promesa/let [spreadsheet (get-spreadsheet)
-                data (all (map (fn [k]
-                                 (promesa/let [rows (-> spreadsheet.sheetsByTitle
-                                                        (js->clj :keywordize-keys true)
-                                                        k
-                                                        .getRows)]
-                                   {k (map #(js->clj (.toObject %) :keywordize-keys true) rows)}))
-                               #{:endpoints :sources :messages}))]
-    (apply merge data)))
+                sheets-data (all (map (fn [k]
+                                        (promesa/let [rows (-> spreadsheet.sheetsByTitle
+                                                               (js->clj :keywordize-keys true)
+                                                               k
+                                                               .getRows)]
+                                          {k (map #(remove-vals empty? (js->clj (.toObject %) :keywordize-keys true)) rows)}))
+                                      #{:endpoints :sources :messages :runs}))
+                spreadsheet-data (apply merge sheets-data)]
+    (transact! conn (prepare-transaction-data spreadsheet-data))
+    (->> spreadsheet-data
+         :runs
+         (remove :message)
+         (map (comp prepare-workflow-data :endpoint)))))
 
 (defn run
   []

@@ -32,6 +32,9 @@
   scripts.hello.exec = ''
     echo hello from $GREET
   '';
+  scripts.release.exec = ''
+    shadow-cljs release workflows main
+  '';
   scripts.spam.exec = ''
     nodemon target/main.js $@
   '';
