@@ -177,7 +177,8 @@
     (->> spreadsheet-data
          :runs
          (remove :message)
-         (map (comp prepare-workflow-data :endpoint)))))
+         (map (comp prepare-workflow-data :endpoint))
+         clj->js)))
 
 (defn run
   []
