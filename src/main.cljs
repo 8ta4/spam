@@ -181,6 +181,7 @@
          clj->js)))
 
 (defstate worker
+; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
   :start (let [worker* (atom nil)]
            (promesa/let [worker** (.create Worker (clj->js {:activities (clj->js {:orchestrate orchestrate})
                                                             :taskQueue task-queue
