@@ -156,7 +156,7 @@
        (map first)
        (sort-by :message/date)))
 
-(defn prepare-workflow-data
+(defn prepare-contexts
   [endpoint]
   {:endpoint endpoint
    :sources (find-sources endpoint)
@@ -177,7 +177,7 @@
     (->> spreadsheet-data
          :runs
          (remove :message)
-         (map (comp prepare-workflow-data :endpoint))
+         (map (comp prepare-contexts :endpoint))
          clj->js)))
 
 (defstate worker
