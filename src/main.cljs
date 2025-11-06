@@ -5,7 +5,7 @@
    ["@temporalio/worker" :refer [Worker]]
    ["kill-port" :as kill-port]
    [app-root-path :refer [toString]]
-   [child_process :refer [spawn]]
+   [child_process :refer [exec spawn]]
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [core :refer [path]]
@@ -19,7 +19,8 @@
    [nbb :refer [loadFile]]
    [os :refer [homedir]]
    [path :refer [join]]
-   [promesa.core :as promesa :refer [all]]))
+   [promesa.core :as promesa :refer [all]]
+   [util :refer [promisify]]))
 
 (defonce config
   (atom {}))
@@ -183,7 +184,10 @@
 
 (defn see
   [source]
-  source)
+  (promesa/-> (str "see " source)
+              ((promisify exec))
+              (js->clj :keywordize-keys true)
+              :stdout))
 
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
