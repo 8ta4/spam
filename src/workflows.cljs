@@ -8,10 +8,12 @@
 
 (defn spam
   []
-  (promesa/let [data (.orchestrate activities)]
-    (promesa/->> (js->clj data :keywordize-keys true)
-                 (mapcat :sources)
-                 distinct
+  (promesa/let [data (.orchestrate activities)
+                sources (->> (js->clj data :keywordize-keys true)
+                             (mapcat :sources)
+                             distinct)]
+    (promesa/->> sources
                  (map #(.see activities (clj->js %)))
                  all
+                 (zipmap sources)
                  clj->js)))
