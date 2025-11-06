@@ -1,6 +1,7 @@
 (ns workflows
   (:require
    ["@temporalio/workflow" :refer [proxyActivities]]
+   [com.rpl.specter :refer [ALL transform]]
    [promesa.core :as promesa :refer [all]]))
 
 (def activities
@@ -8,10 +9,12 @@
 
 (defn spam
   []
-  (promesa/let [data (.orchestrate activities)]
-    (promesa/->> (js->clj data :keywordize-keys true)
-                 (mapcat :sources)
-                 distinct
-                 (map #(.see activities (clj->js %)))
-                 all
-                 clj->js)))
+  (promesa/let [data (.orchestrate activities)
+                sources (->> (js->clj data :keywordize-keys true)
+                             (mapcat :sources)
+                             distinct)
+                source-content (promesa/->> sources
+                                            (map #(.see activities (clj->js %)))
+                                            all
+                                            (zipmap sources))]
+    (clj->js (transform [ALL :sources ALL] source-content (js->clj data :keywordize-keys true)))))
