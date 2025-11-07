@@ -17,6 +17,7 @@
          :main main/main
          :output-to "target/main.js"
          :target :node-script}
-  :workflows {:exports {:spam workflows/spam}
+  :workflows {:exports {:generate workflows/generate
+                        :spam workflows/spam}
               :output-to "target/workflows.js"
               :target :node-library}}}

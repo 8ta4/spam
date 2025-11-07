@@ -1,5 +1,6 @@
 (ns main
   (:require
+   ["@google/genai" :refer [GoogleGenAI]]
    ["@temporalio/client" :refer [Client Connection]]
    ["@temporalio/worker" :refer [Worker]]
    ["kill-port" :as kill-port]
@@ -188,11 +189,23 @@
               (js->clj :keywordize-keys true)
               :stdout))
 
+(def client
+  (GoogleGenAI. (clj->js {:apiKey (slurp (join (homedir) ".config/spam/google-ai-studio"))})))
+
+(defn create
+  [context]
+  (promesa/do (load-config)
+              (promesa/-> client
+                          (.models.generateContent (clj->js {:model "gemini-2.5-flash"
+                                                             :contents ((:user (:creator (:prompts @config))) context)}))
+                          (.-text))))
+
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
   :start (let [worker* (atom nil)]
            (promesa/let [worker** (.create Worker (clj->js {:activities (clj->js {:orchestrate orchestrate
-                                                                                  :see see})
+                                                                                  :see see
+                                                                                  :create create})
                                                             :taskQueue task-queue
                                                             :workflowsPath (path/join (toString) "target/workflows.js")}))]
              (reset! worker* worker**)
