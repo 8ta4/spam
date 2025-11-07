@@ -23,7 +23,8 @@
                                             (zipmap sources))]
     (promesa/->> (js->clj data :keywordize-keys true)
                  (map (fn [context]
-                        (startChild "generate" (clj->js {:args [(transform [:sources ALL] source-content context)]
-                                                         :workflowId (:endpoint context)}))))
+                        (startChild "generate"
+                                    (clj->js {:args [(transform [:sources ALL] source-content context)]
+                                              :workflowId (:endpoint context)}))))
                  all
                  clj->js)))
