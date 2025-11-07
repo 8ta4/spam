@@ -9,7 +9,9 @@
 
 (defn generate
   [context]
-  (.create activities context))
+  (promesa/let [[a b] (all (map #(.create activities %) (repeat 2 context)))]
+    (.judge activities (clj->js (merge (js->clj context) {:a a
+                                                          :b b})))))
 
 (defn spam
   []

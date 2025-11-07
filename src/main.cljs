@@ -8,18 +8,22 @@
    [child_process :refer [exec spawn]]
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
+   [clojure.walk :refer [postwalk]]
+   [com.rpl.specter :refer [setval]]
    [core :refer [path]]
    [datascript.core :refer [create-conn q transact!]]
    [flatland.ordered.map :refer [ordered-map]]
    [google-auth-library :refer [JWT]]
    [google-spreadsheet :refer [GoogleSpreadsheet]]
    [lambdaisland.uri :refer [uri]]
+   [malli.json-schema :refer [transform]]
    [medley.core :refer [remove-vals]]
    [mount.core :refer [defstate start]]
    [nbb :refer [loadFile]]
    [os :refer [homedir]]
    [path :refer [join]]
    [promesa.core :as promesa :refer [all]]
+   [tick.core :refer [date]]
    [util :refer [promisify]]))
 
 (defonce config
@@ -38,10 +42,26 @@
         (partial string/replace (slurp "src/config.cljs") "<spreadsheet-id>")
         get-spreadsheet-id))
 
+(defn adapt
+  [x]
+  (if (fn? x)
+    (comp x clj->js)
+    x))
+
+(def unmarshall
+  (comp (partial postwalk adapt)
+        #(js->clj % :keywordize-keys true)))
+
+(defn unmarshall
+  [path*]
+  (promesa/let [content (loadFile path*)]
+    (postwalk adapt (js->clj content :keywordize-keys true))))
+
 (defn load-config
   []
-  (promesa/let [js-config (loadFile "src/bridge.cljs")]
-    (reset! config (js->clj js-config :keywordize-keys true))))
+  (promesa/->> "src/bridge.cljs"
+               unmarshall
+               (reset! config)))
 
 (def google-cloud-credentials
   (-> (homedir)
@@ -192,20 +212,51 @@
 (def client
   (GoogleGenAI. (clj->js {:apiKey (slurp (join (homedir) ".config/spam/google-ai-studio"))})))
 
-(defn create
-  [context]
+(defn invoke-agent
+  [agent schema context]
   (promesa/do (load-config)
               (promesa/-> client
-                          (.models.generateContent (clj->js {:model "gemini-2.5-flash"
-                                                             :contents ((:user (:creator (:prompts @config))) context)}))
-                          (.-text))))
+                          (.models.generateContent (clj->js {:config {:responseMimeType "application/json"
+                                                                      :responseJsonSchema (transform schema)
+                                                                      :systemInstruction (->> @config
+                                                                                              :prompts
+                                                                                              agent
+                                                                                              :system)
+                                                                      :thinkingConfig {:thinkingBudget (if js/goog.DEBUG
+                                                                                                         0
+                                                                                                         ; https://ai.google.dev/gemini-api/docs/thinking#set-budget
+                                                                                                         32768)}}
+                                                             :contents (->> (js->clj context :keywordize-keys true)
+                                                                            (setval :date (date))
+                                                                            ((->> @config
+                                                                                  :prompts
+                                                                                  agent
+                                                                                  :user)))
+                                                             :model (if js/goog.DEBUG
+                                                                      "gemini-2.5-flash-lite"
+                                                                      "gemini-2.5-pro")}))
+                          .-text
+                          js/JSON.parse)))
+
+(defn create
+  [context]
+  (promesa/-> (invoke-agent :creator [:map [:message :string]] context)
+              (js->clj :keywordize-keys true)
+              :message))
+
+(def judge
+  (partial invoke-agent :judge [:map
+                                [:winner [:enum "a" "b"]]
+                                [:critique [:string]]]))
+
 
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
   :start (let [worker* (atom nil)]
            (promesa/let [worker** (.create Worker (clj->js {:activities (clj->js {:orchestrate orchestrate
                                                                                   :see see
-                                                                                  :create create})
+                                                                                  :create create
+                                                                                  :judge judge})
                                                             :taskQueue task-queue
                                                             :workflowsPath (path/join (toString) "target/workflows.js")}))]
              (reset! worker* worker**)

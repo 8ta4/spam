@@ -2,7 +2,8 @@
   (:require
    [clojure.walk :refer [postwalk]]
    [core :refer [path]]
-   [nbb.core :refer [load-file]]))
+   [nbb.core :refer [load-file]]
+   [promesa.core :as promesa]))
 
 (defn adapt
   [x]
@@ -10,6 +11,15 @@
     (comp x #(js->clj % :keywordize-keys true))
     x))
 
-(.then (load-file path)
-       (comp clj->js
-             (partial postwalk adapt)))
+(def marshall
+  (comp clj->js
+        (partial postwalk adapt)))
+
+(defn marshall
+  [path*]
+  (promesa/->> path*
+               load-file
+               (postwalk adapt)
+               clj->js))
+
+(marshall path)
