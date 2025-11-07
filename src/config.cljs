@@ -1,2 +1,4 @@
 {:spreadsheet "<spreadsheet-id>"
- :prompts {:creator {:user (fn [{:keys [endpoint]}] endpoint)}}}
+ :prompts {:creator {:user (fn [{:keys [date endpoint messages sources]}]
+                             (str date endpoint messages sources))
+                     :system ""}}}
