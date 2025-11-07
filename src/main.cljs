@@ -8,7 +8,7 @@
    [child_process :refer [exec spawn]]
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
-   [clojure.walk :refer [prewalk]]
+   [clojure.walk :refer [postwalk]]
    [com.rpl.specter :refer [setval]]
    [core :refer [path]]
    [datascript.core :refer [create-conn q transact!]]
@@ -48,10 +48,16 @@
     (comp x clj->js)
     x))
 
+(def unmarshall
+  (comp (partial postwalk adapt)
+        #(js->clj % :keywordize-keys true)))
+
 (defn load-config
   []
-  (promesa/let [js-config (loadFile "src/bridge.cljs")]
-    (reset! config (prewalk adapt (js->clj js-config :keywordize-keys true)))))
+  (promesa/->> "src/bridge.cljs"
+               loadFile
+               unmarshall
+               (reset! config)))
 
 (def google-cloud-credentials
   (-> (homedir)

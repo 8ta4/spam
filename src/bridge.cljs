@@ -10,6 +10,8 @@
     (comp x #(js->clj % :keywordize-keys true))
     x))
 
-(.then (load-file path)
-       (comp clj->js
-             (partial postwalk adapt)))
+(def marshall
+  (comp clj->js
+        (partial postwalk adapt)))
+
+(.then (load-file path) marshall)
