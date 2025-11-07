@@ -8,6 +8,7 @@
    [child_process :refer [exec spawn]]
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
+   [com.rpl.specter :refer [setval]]
    [core :refer [path]]
    [datascript.core :refer [create-conn q transact!]]
    [flatland.ordered.map :refer [ordered-map]]
@@ -20,7 +21,8 @@
    [os :refer [homedir]]
    [path :refer [join]]
    [promesa.core :as promesa :refer [all]]
-   [util :refer [promisify]]))
+   [util :refer [promisify]]
+   [tick.core :refer [date]]))
 
 (defonce config
   (atom {}))
@@ -197,7 +199,13 @@
   (promesa/do (load-config)
               (promesa/-> client
                           (.models.generateContent (clj->js {:model "gemini-2.5-flash"
-                                                             :contents ((:user (:creator (:prompts @config))) context)}))
+                                                             :contents (->> (js->clj context :keywordize-keys true)
+                                                                            (setval :date (date))
+                                                                            clj->js
+                                                                            ((->> @config
+                                                                                  :prompts
+                                                                                  :creator
+                                                                                  :user)))}))
                           .-text)))
 
 (defstate worker

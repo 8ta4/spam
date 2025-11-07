@@ -4,13 +4,14 @@
 
  :dependencies
  [[com.github.pkpkpk/cljs-node-io "2.0.339"]
+  [com.rpl/specter "1.1.6"]
   [datascript "1.7.8"]
   [dev.weavejester/medley "1.9.0"]
   [funcool/promesa "11.0.678"]
   [lambdaisland/uri "1.19.155"]
   [mount "0.1.23"]
   [org.flatland/ordered "1.15.12"]
-  [com.rpl/specter "1.1.6"]]
+  [tick "1.0"]]
 
  :builds
  {:main {:devtools {:preloads [repl]}
