@@ -1,6 +1,5 @@
 (ns main
   (:require
-   ["./workflows" :refer [spam]]
    ["@temporalio/client" :refer [Client Connection]]
    ["@temporalio/worker" :refer [Worker]]
    ["kill-port" :as kill-port]
@@ -205,8 +204,8 @@
   []
   (start)
   (promesa/let [connection (.connect Connection)]
-    (.workflow.execute (Client. connection) spam (clj->js {:taskQueue task-queue
-                                                           :workflowId "spam"}))))
+    (.workflow.execute (Client. connection) "spam" (clj->js {:taskQueue task-queue
+                                                             :workflowId "spam"}))))
 
 (defn main
   [& args]
