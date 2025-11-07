@@ -228,7 +228,7 @@
         (partial invoke-agent :creator [:map [:message :string]])))
 
 (def judge
-  (partial invoke-agent :judge [:map [:winner :string]]))
+  (partial invoke-agent :judge [:map [:winner [:enum "a" "b"]]]))
 
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
