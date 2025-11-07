@@ -208,7 +208,7 @@
                                                                                   :prompts
                                                                                   :creator
                                                                                   :user)))
-                                                             :model "gemini-2.5-flash"}))
+                                                             :model "gemini-2.5-flash-lite"}))
                           .-text)))
 
 (defstate worker
