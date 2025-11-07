@@ -1,11 +1,15 @@
 (ns workflows
   (:require
-   ["@temporalio/workflow" :refer [proxyActivities]]
+   ["@temporalio/workflow" :refer [proxyActivities startChild]]
    [com.rpl.specter :refer [ALL transform]]
    [promesa.core :as promesa :refer [all]]))
 
 (def activities
   (proxyActivities (clj->js {:startToCloseTimeout (* 60 1000)})))
+
+(defn generate
+  [context]
+  context)
 
 (defn spam
   []
@@ -17,4 +21,8 @@
                                             (map #(.see activities (clj->js %)))
                                             all
                                             (zipmap sources))]
-    (clj->js (transform [ALL :sources ALL] source-content (js->clj data :keywordize-keys true)))))
+    (promesa/->> (js->clj data :keywordize-keys true)
+                 (map (fn [context]
+                        (startChild "generate" (clj->js {:args [(transform [:sources ALL] source-content context)]}))))
+                 all
+                 clj->js)))
