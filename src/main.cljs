@@ -224,12 +224,17 @@
                           (js->clj :keywordize-keys true)
                           :message)))
 
+(defn jduge
+  [context]
+  context)
+
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
   :start (let [worker* (atom nil)]
            (promesa/let [worker** (.create Worker (clj->js {:activities (clj->js {:orchestrate orchestrate
                                                                                   :see see
-                                                                                  :create create})
+                                                                                  :create create
+                                                                                  :judge jduge})
                                                             :taskQueue task-queue
                                                             :workflowsPath (path/join (toString) "target/workflows.js")}))]
              (reset! worker* worker**)
