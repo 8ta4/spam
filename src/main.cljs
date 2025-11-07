@@ -8,6 +8,7 @@
    [child_process :refer [exec spawn]]
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
+   [clojure.walk :refer [prewalk]]
    [com.rpl.specter :refer [setval]]
    [core :refer [path]]
    [datascript.core :refer [create-conn q transact!]]
@@ -22,8 +23,8 @@
    [os :refer [homedir]]
    [path :refer [join]]
    [promesa.core :as promesa :refer [all]]
-   [util :refer [promisify]]
-   [tick.core :refer [date]]))
+   [tick.core :refer [date]]
+   [util :refer [promisify]]))
 
 (defonce config
   (atom {}))
@@ -41,10 +42,16 @@
         (partial string/replace (slurp "src/config.cljs") "<spreadsheet-id>")
         get-spreadsheet-id))
 
+(defn adapt
+  [x]
+  (if (fn? x)
+    (comp x clj->js)
+    x))
+
 (defn load-config
   []
   (promesa/let [js-config (loadFile "src/bridge.cljs")]
-    (reset! config (js->clj js-config :keywordize-keys true))))
+    (reset! config (prewalk adapt (js->clj js-config :keywordize-keys true)))))
 
 (def google-cloud-credentials
   (-> (homedir)
@@ -211,7 +218,6 @@
                                                                                                          32768)}}
                                                              :contents (->> (js->clj context :keywordize-keys true)
                                                                             (setval :date (date))
-                                                                            clj->js
                                                                             ((->> @config
                                                                                   :prompts
                                                                                   agent
@@ -222,15 +228,17 @@
                           .-text
                           js/JSON.parse)))
 
-(def create
-  (comp :message
-        #(js->clj % :keywordize-keys true)
-        (partial invoke-agent :creator [:map [:message :string]])))
+(defn create
+  [context]
+  (promesa/-> (invoke-agent :creator [:map [:message :string]] context)
+              (js->clj :keywordize-keys true)
+              :message))
 
 (def judge
   (partial invoke-agent :judge [:map
                                 [:winner [:enum "a" "b"]]
                                 [:critique [:string]]]))
+
 
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
