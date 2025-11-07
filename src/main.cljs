@@ -205,7 +205,10 @@
                                                                                               :prompts
                                                                                               :creator
                                                                                               :system)
-                                                                      :thinkingConfig {:thinkingBudget 0}}
+                                                                      :thinkingConfig {:thinkingBudget (if js/goog.DEBUG
+                                                                                                         0
+                                                                                                         ; https://ai.google.dev/gemini-api/docs/thinking#set-budget
+                                                                                                         32768)}}
                                                              :contents (->> (js->clj context :keywordize-keys true)
                                                                             (setval :date (date))
                                                                             clj->js
@@ -213,7 +216,9 @@
                                                                                   :prompts
                                                                                   :creator
                                                                                   :user)))
-                                                             :model "gemini-2.5-flash-lite"}))
+                                                             :model (if js/goog.DEBUG
+                                                                      "gemini-2.5-flash-lite"
+                                                                      "gemini-2.5-pro")}))
                           .-text)))
 
 (defstate worker
