@@ -198,7 +198,7 @@
               (promesa/-> client
                           (.models.generateContent (clj->js {:model "gemini-2.5-flash"
                                                              :contents ((:user (:creator (:prompts @config))) context)}))
-                          (.-text))))
+                          .-text)))
 
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
