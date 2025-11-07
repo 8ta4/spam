@@ -6,6 +6,7 @@
     "shadow-cljs": "3.2.1"
   },
   "dependencies": {
+    "@google/genai": "^1.29.0",
     "@temporalio/client": "^1.13.1",
     "@temporalio/worker": "^1.13.1",
     "@temporalio/workflow": "^1.13.1",
