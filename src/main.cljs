@@ -195,15 +195,15 @@
 (def client
   (GoogleGenAI. (clj->js {:apiKey (slurp (join (homedir) ".config/spam/google-ai-studio"))})))
 
-(defn create
-  [context]
+(defn invoke-agent
+  [agent schema context]
   (promesa/do (load-config)
               (promesa/-> client
                           (.models.generateContent (clj->js {:config {:responseMimeType "application/json"
-                                                                      :responseJsonSchema (transform [:map [:message :string]])
+                                                                      :responseJsonSchema (transform schema)
                                                                       :systemInstruction (->> @config
                                                                                               :prompts
-                                                                                              :creator
+                                                                                              agent
                                                                                               :system)
                                                                       :thinkingConfig {:thinkingBudget (if js/goog.DEBUG
                                                                                                          0
@@ -214,19 +214,21 @@
                                                                             clj->js
                                                                             ((->> @config
                                                                                   :prompts
-                                                                                  :creator
+                                                                                  agent
                                                                                   :user)))
                                                              :model (if js/goog.DEBUG
                                                                       "gemini-2.5-flash-lite"
                                                                       "gemini-2.5-pro")}))
                           .-text
-                          js/JSON.parse
-                          (js->clj :keywordize-keys true)
-                          :message)))
+                          js/JSON.parse)))
 
-(defn jduge
-  [context]
-  context)
+(def create
+  (comp :message
+        #(js->clj % :keywordize-keys true)
+        (partial invoke-agent :creator [:map [:message :string]])))
+
+(def judge
+  (partial invoke-agent :judge [:map [:winner :string]]))
 
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
@@ -234,7 +236,7 @@
            (promesa/let [worker** (.create Worker (clj->js {:activities (clj->js {:orchestrate orchestrate
                                                                                   :see see
                                                                                   :create create
-                                                                                  :judge jduge})
+                                                                                  :judge judge})
                                                             :taskQueue task-queue
                                                             :workflowsPath (path/join (toString) "target/workflows.js")}))]
              (reset! worker* worker**)
