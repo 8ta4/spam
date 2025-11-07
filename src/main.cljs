@@ -15,6 +15,7 @@
    [google-auth-library :refer [JWT]]
    [google-spreadsheet :refer [GoogleSpreadsheet]]
    [lambdaisland.uri :refer [uri]]
+   [malli.json-schema :refer [transform]]
    [medley.core :refer [remove-vals]]
    [mount.core :refer [defstate start]]
    [nbb :refer [loadFile]]
@@ -198,14 +199,16 @@
   [context]
   (promesa/do (load-config)
               (promesa/-> client
-                          (.models.generateContent (clj->js {:model "gemini-2.5-flash"
+                          (.models.generateContent (clj->js {:config {:responseMimeType "application/json"
+                                                                      :responseJsonSchema (transform [:map [:message :string]])}
                                                              :contents (->> (js->clj context :keywordize-keys true)
                                                                             (setval :date (date))
                                                                             clj->js
                                                                             ((->> @config
                                                                                   :prompts
                                                                                   :creator
-                                                                                  :user)))}))
+                                                                                  :user)))
+                                                             :model "gemini-2.5-flash"}))
                           .-text)))
 
 (defstate worker
