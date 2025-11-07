@@ -219,7 +219,10 @@
                                                              :model (if js/goog.DEBUG
                                                                       "gemini-2.5-flash-lite"
                                                                       "gemini-2.5-pro")}))
-                          .-text)))
+                          .-text
+                          js/JSON.parse
+                          (js->clj :keywordize-keys true)
+                          :message)))
 
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
