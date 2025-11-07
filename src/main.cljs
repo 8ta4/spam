@@ -52,10 +52,14 @@
   (comp (partial postwalk adapt)
         #(js->clj % :keywordize-keys true)))
 
+(defn unmarshall
+  [path*]
+  (promesa/let [content (loadFile path*)]
+    (postwalk adapt (js->clj content :keywordize-keys true))))
+
 (defn load-config
   []
   (promesa/->> "src/bridge.cljs"
-               loadFile
                unmarshall
                (reset! config)))
 
