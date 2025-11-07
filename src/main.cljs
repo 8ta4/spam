@@ -200,7 +200,11 @@
   (promesa/do (load-config)
               (promesa/-> client
                           (.models.generateContent (clj->js {:config {:responseMimeType "application/json"
-                                                                      :responseJsonSchema (transform [:map [:message :string]])}
+                                                                      :responseJsonSchema (transform [:map [:message :string]])
+                                                                      :systemInstruction (->> @config
+                                                                                              :prompts
+                                                                                              :creator
+                                                                                              :system)}
                                                              :contents (->> (js->clj context :keywordize-keys true)
                                                                             (setval :date (date))
                                                                             clj->js
