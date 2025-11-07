@@ -204,7 +204,8 @@
                                                                       :systemInstruction (->> @config
                                                                                               :prompts
                                                                                               :creator
-                                                                                              :system)}
+                                                                                              :system)
+                                                                      :thinkingConfig {:thinkingBudget 0}}
                                                              :contents (->> (js->clj context :keywordize-keys true)
                                                                             (setval :date (date))
                                                                             clj->js
