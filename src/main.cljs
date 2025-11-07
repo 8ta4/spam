@@ -190,7 +190,8 @@
 
 (defn create
   [context]
-  context)
+  (promesa/do (load-config)
+              ((:user (:creator (:prompts @config))) context)))
 
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
