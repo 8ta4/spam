@@ -258,6 +258,11 @@
 (def edit
   (partial invoke-text-agent :editor))
 
+(def gatekeep
+  (partial invoke-agent :judge [:map
+                                [:approved :boolean]
+                                [:reason :string]]))
+
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
   :start (let [worker* (atom nil)]

@@ -10,4 +10,7 @@
                         :system ""}
            :editor {:user (fn [{:keys [date endpoint messages sources message]}]
                             (str date endpoint messages sources message))
-                    :system ""}}}
+                    :system ""}
+           :gatekeeper {:user (fn [{:keys [date endpoint messages sources message]}]
+                                (str date endpoint messages sources message))
+                        :system ""}}}
