@@ -13,7 +13,7 @@
   (<*> (comp keyword :winner) identity))
 
 (defn run-round
-  [context round]
+  [round context]
   (promesa/let [champion (get-winning-message context)
                 challenger (.challenge activities (clj->js context))
                 toss (.toss activities)
@@ -26,7 +26,7 @@
                 context** (merge context* (js->clj judgment :keywordize-keys true))]
     (cond (= champion (get-winning-message context**)) champion
           (= round 9) (get-winning-message context**)
-          :else (promesa/recur context** (inc round)))))
+          :else (promesa/recur (inc round) context**))))
 
 (defn generate
   [context]
@@ -34,7 +34,7 @@
                 context* (merge (js->clj context :keywordize-keys true) {:a a
                                                                          :b b})
                 judgment (.judge activities (clj->js context*))]
-    (run-round (merge context* (js->clj judgment :keywordize-keys true)) 0)))
+    (run-round 0 (merge context* (js->clj judgment :keywordize-keys true)))))
 
 (defn spam
   []
