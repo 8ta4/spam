@@ -183,23 +183,6 @@
   [row]
   (remove-vals empty? (js->clj (.toObject row) :keywordize-keys true)))
 
-(defn save
-  [result]
-  (promesa/let [spreadsheet (get-spreadsheet)
-                rows (promesa/-> spreadsheet.sheetsByTitle
-                                 (js->clj :keywordize-keys true)
-                                 :runs
-                                 .getRows)
-                row (->> rows
-                         (remove (comp :message
-                                       parse-row))
-                         (filter (comp (partial = (:endpoint (js->clj result :keywordize-keys true)))
-                                       :endpoint
-                                       parse-row))
-                         first)]
-    (.assign row (clj->js (select-keys (js->clj result :keywordize-keys true) #{:approved :message :reason})))
-    (.save row)))
-
 (defn orchestrate
   []
   (promesa/let [spreadsheet (get-spreadsheet)
@@ -284,6 +267,23 @@
                                 [:approved :boolean]
                                 [:reason :string]]))
 
+(defn save
+  [result]
+  (promesa/let [spreadsheet (get-spreadsheet)
+                rows (promesa/-> spreadsheet.sheetsByTitle
+                                 (js->clj :keywordize-keys true)
+                                 :runs
+                                 .getRows)
+                row (->> rows
+                         (remove (comp :message
+                                       parse-row))
+                         (filter (comp (partial = (:endpoint (js->clj result :keywordize-keys true)))
+                                       :endpoint
+                                       parse-row))
+                         first)]
+    (.assign row (clj->js (select-keys (js->clj result :keywordize-keys true) #{:approved :message :reason})))
+    (.save row)))
+
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
   :start (let [worker* (atom nil)]
@@ -294,7 +294,8 @@
                                                                                   :challenge challenge
                                                                                   :toss toss
                                                                                   :edit edit
-                                                                                  :gatekeep gatekeep})
+                                                                                  :gatekeep gatekeep
+                                                                                  :save save})
                                                             :taskQueue task-queue
                                                             :workflowsPath (path/join (toString) "target/workflows.js")}))]
              (reset! worker* worker**)

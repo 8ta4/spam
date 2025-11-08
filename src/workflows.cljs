@@ -43,9 +43,9 @@
                               (setval :message edited-message)
                               clj->js
                               (.gatekeep activities))]
-    (clj->js (merge {:endpoint (:endpoint context)
-                     :message edited-message}
-                    (js->clj decision :keywordize-keys true)))))
+    (.save activities (clj->js (merge {:endpoint (:endpoint (js->clj context :keywordize-keys true))
+                                       :message edited-message}
+                                      (js->clj decision :keywordize-keys true))))))
 
 (defn spam
   []
