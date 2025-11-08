@@ -7,11 +7,18 @@
 (def activities
   (proxyActivities (clj->js {:startToCloseTimeout (* 60 1000)})))
 
+(defn run-round
+  [context round])
+
 (defn generate
   [context]
-  (promesa/let [[a b] (all (map #(.create activities %) (repeat 2 context)))]
-    (.judge activities (clj->js (merge (js->clj context) {:a a
-                                                          :b b})))))
+  (promesa/let [[a b] (all (map #(.create activities %) (repeat 2 context)))
+                context* (merge (js->clj context :keywordize-keys true) {:a a
+                                                                         :b b})
+                bar (.judge activities (clj->js context*))]
+    (run-round (merge context*
+                      (js->clj bar :keywordize-keys true))
+               0)))
 
 (defn spam
   []
