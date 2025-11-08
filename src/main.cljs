@@ -255,6 +255,10 @@
 (def challenge
   (partial invoke-text-agent :challenger))
 
+(defn toss
+  []
+  (zero? (rand-int 2)))
+
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
   :start (let [worker* (atom nil)]
@@ -262,7 +266,8 @@
                                                                                   :see see
                                                                                   :create create
                                                                                   :judge judge
-                                                                                  :challenge challenge})
+                                                                                  :challenge challenge
+                                                                                  :toss toss})
                                                             :taskQueue task-queue
                                                             :workflowsPath (path/join (toString) "target/workflows.js")}))]
              (reset! worker* worker**)
