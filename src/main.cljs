@@ -251,12 +251,12 @@
 (def challenge
   (partial invoke-text-agent :challenger))
 
-(def edit
-  (partial invoke-text-agent :editor))
-
 (defn toss
   []
   (zero? (rand-int 2)))
+
+(def edit
+  (partial invoke-text-agent :editor))
 
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
