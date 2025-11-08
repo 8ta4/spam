@@ -9,8 +9,17 @@
 
 (defn run-round
   [context round]
-  (.challenge activities (clj->js context))
-  (.toss activities))
+  (promesa/let [champion ((keyword (:winner context)) context)
+                challenger (.challenge activities (clj->js context))
+                toss (.toss activities)]
+    (->> (if toss
+           {:a champion
+            :b challenger}
+           {:a challenger
+            :b champion})
+         (merge (select-keys context #{:date :endpoint :messages :sources}))
+         clj->js
+         (.judge activities))))
 
 (defn generate
   [context]
