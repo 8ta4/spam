@@ -1,15 +1,16 @@
 (ns workflows
   (:require
    ["@temporalio/workflow" :refer [proxyActivities executeChild]]
+   [cats.builtin]
+   [cats.core :refer [<*>]]
    [com.rpl.specter :refer [ALL transform]]
    [promesa.core :as promesa :refer [all]]))
 
 (def activities
   (proxyActivities (clj->js {:startToCloseTimeout (* 60 1000)})))
 
-(defn get-winning-message
-  [context]
-  ((keyword (:winner context)) context))
+(def get-winning-message
+  (<*> (comp keyword :winner) identity))
 
 (defn run-round
   [context round]
