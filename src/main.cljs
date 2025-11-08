@@ -75,7 +75,7 @@
   (ordered-map :endpoints [:endpoint :prospect]
                :sources [:source :prospect]
                :messages [:date :endpoint :message]
-               :runs [:timestamp :approved :endpoint :message :reason]))
+               :runs [:approved :endpoint :message :reason]))
 
 (def sample
   {:endpoints [{:endpoint "contact@example.com"
