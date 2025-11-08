@@ -238,17 +238,22 @@
                           .-text
                           js/JSON.parse)))
 
-(defn create
-  [context]
-  (promesa/-> (invoke-agent :creator [:map [:message :string]] context)
+(defn invoke-text-agent
+  [agent context]
+  (promesa/-> (invoke-agent agent [:map [:message :string]] context)
               (js->clj :keywordize-keys true)
               :message))
+
+(def create
+  (partial invoke-text-agent :creator))
 
 (def judge
   (partial invoke-agent :judge [:map
                                 [:winner [:enum "a" "b"]]
                                 [:critique [:string]]]))
 
+(def challenge
+  (partial invoke-text-agent :challenger))
 
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
@@ -256,7 +261,8 @@
            (promesa/let [worker** (.create Worker (clj->js {:activities (clj->js {:orchestrate orchestrate
                                                                                   :see see
                                                                                   :create create
-                                                                                  :judge judge})
+                                                                                  :judge judge
+                                                                                  :challenge challenge})
                                                             :taskQueue task-queue
                                                             :workflowsPath (path/join (toString) "target/workflows.js")}))]
              (reset! worker* worker**)
