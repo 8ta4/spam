@@ -17,11 +17,11 @@
   (promesa/let [champion (get-winning-message context)
                 challenger (.challenge activities (clj->js context))
                 toss (.toss activities)
-                context* (merge (select-keys context #{:date :endpoint :messages :sources}) (if toss
-                                                                                              {:a champion
-                                                                                               :b challenger}
-                                                                                              {:a challenger
-                                                                                               :b champion}))
+                context* (merge (select-keys context #{:endpoint :messages :sources}) (if toss
+                                                                                        {:a champion
+                                                                                         :b challenger}
+                                                                                        {:a challenger
+                                                                                         :b champion}))
                 judgment (.judge activities (clj->js context*))
                 context** (merge context* (js->clj judgment :keywordize-keys true))]
     (cond (= champion (get-winning-message context**)) champion
