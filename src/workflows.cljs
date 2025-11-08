@@ -1,9 +1,9 @@
 (ns workflows
   (:require
-   ["@temporalio/workflow" :refer [proxyActivities executeChild]]
+   ["@temporalio/workflow" :refer [executeChild proxyActivities]]
    [cats.builtin]
    [cats.core :refer [<*>]]
-   [com.rpl.specter :refer [ALL transform]]
+   [com.rpl.specter :refer [ALL setval transform]]
    [promesa.core :as promesa :refer [all]]))
 
 (def activities
@@ -33,8 +33,12 @@
   (promesa/let [[a b] (all (map #(.create activities %) (repeat 2 context)))
                 context* (merge (js->clj context :keywordize-keys true) {:a a
                                                                          :b b})
-                judgment (.judge activities (clj->js context*))]
-    (run-round 0 (merge context* (js->clj judgment :keywordize-keys true)))))
+                judgment (.judge activities (clj->js context*))
+                winning-message (run-round 0 (merge context* (js->clj judgment :keywordize-keys true)))]
+    (->> (js->clj context :keywordize-keys true)
+         (setval :message winning-message)
+         clj->js
+         (.edit activities))))
 
 (defn spam
   []

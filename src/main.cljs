@@ -266,7 +266,8 @@
                                                                                   :create create
                                                                                   :judge judge
                                                                                   :challenge challenge
-                                                                                  :toss toss})
+                                                                                  :toss toss
+                                                                                  :edit edit})
                                                             :taskQueue task-queue
                                                             :workflowsPath (path/join (toString) "target/workflows.js")}))]
              (reset! worker* worker**)
