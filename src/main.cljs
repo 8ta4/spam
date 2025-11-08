@@ -179,6 +179,27 @@
    :sources (find-sources endpoint)
    :messages (find-messages endpoint)})
 
+(defn parse-row
+  [row]
+  (remove-vals empty? (js->clj (.toObject row) :keywordize-keys true)))
+
+(defn save
+  [result]
+  (promesa/let [spreadsheet (get-spreadsheet)
+                rows (promesa/-> spreadsheet.sheetsByTitle
+                                 (js->clj :keywordize-keys true)
+                                 :runs
+                                 .getRows)
+                row (->> rows
+                         (remove (comp :message
+                                       parse-row))
+                         (filter (comp (partial = (:endpoint (js->clj result :keywordize-keys true)))
+                                       :endpoint
+                                       parse-row))
+                         first)]
+    (.assign row (clj->js (select-keys (js->clj result :keywordize-keys true) #{:approved :message :reason})))
+    (.save row)))
+
 (defn orchestrate
   []
   (promesa/let [spreadsheet (get-spreadsheet)
@@ -188,7 +209,7 @@
                                                                             (js->clj :keywordize-keys true)
                                                                             k
                                                                             .getRows)]
-                                                       {k (map #(remove-vals empty? (js->clj (.toObject %) :keywordize-keys true)) rows)})))
+                                                       {k (map parse-row rows)})))
                                               all
                                               (apply merge))]
     (transact! conn (prepare-transaction-data spreadsheet-data))
