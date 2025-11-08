@@ -7,4 +7,10 @@
                    :system ""}
            :challenger {:user (fn [{:keys [date endpoint messages sources a b winner critique]}]
                                 (str date endpoint messages sources a b winner critique))
+                        :system ""}
+           :editor {:user (fn [{:keys [date endpoint messages sources message]}]
+                            (str date endpoint messages sources message))
+                    :system ""}
+           :gatekeeper {:user (fn [{:keys [date endpoint messages sources message]}]
+                                (str date endpoint messages sources message))
                         :system ""}}}

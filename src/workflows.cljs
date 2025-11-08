@@ -1,39 +1,48 @@
 (ns workflows
   (:require
-   ["@temporalio/workflow" :refer [proxyActivities executeChild]]
-   [com.rpl.specter :refer [ALL transform]]
+   ["@temporalio/workflow" :refer [executeChild proxyActivities]]
+   [cats.builtin]
+   [cats.core :refer [<*>]]
+   [com.rpl.specter :refer [ALL setval transform]]
    [promesa.core :as promesa :refer [all]]))
 
 (def activities
   (proxyActivities (clj->js {:startToCloseTimeout (* 60 1000)})))
 
-(defn get-winning-message
-  [context]
-  ((keyword (:winner context)) context))
+(def get-winning-message
+  (<*> (comp keyword :winner) identity))
 
 (defn run-round
-  [context round]
+  [round context]
   (promesa/let [champion (get-winning-message context)
                 challenger (.challenge activities (clj->js context))
                 toss (.toss activities)
-                context* (merge (select-keys context #{:date :endpoint :messages :sources}) (if toss
-                                                                                              {:a champion
-                                                                                               :b challenger}
-                                                                                              {:a challenger
-                                                                                               :b champion}))
+                context* (merge (select-keys context #{:endpoint :messages :sources}) (if toss
+                                                                                        {:a champion
+                                                                                         :b challenger}
+                                                                                        {:a challenger
+                                                                                         :b champion}))
                 judgment (.judge activities (clj->js context*))
                 context** (merge context* (js->clj judgment :keywordize-keys true))]
     (cond (= champion (get-winning-message context**)) champion
           (= round 9) (get-winning-message context**)
-          :else (promesa/recur context** (inc round)))))
+          :else (promesa/recur (inc round) context**))))
 
 (defn generate
   [context]
   (promesa/let [[a b] (all (map #(.create activities %) (repeat 2 context)))
                 context* (merge (js->clj context :keywordize-keys true) {:a a
                                                                          :b b})
-                judgment (.judge activities (clj->js context*))]
-    (run-round (merge context* (js->clj judgment :keywordize-keys true)) 0)))
+                judgment (.judge activities (clj->js context*))
+                winning-message (run-round 0 (merge context* (js->clj judgment :keywordize-keys true)))
+                edited-message (->> (js->clj context :keywordize-keys true)
+                         (setval :message winning-message)
+                         clj->js
+                         (.edit activities))]
+    (->> (js->clj context :keywordize-keys true)
+         (setval :message edited-message)
+         clj->js
+         (.gatekeep activities))))
 
 (defn spam
   []

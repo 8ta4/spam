@@ -11,10 +11,6 @@
     (comp x #(js->clj % :keywordize-keys true))
     x))
 
-(def marshall
-  (comp clj->js
-        (partial postwalk adapt)))
-
 (defn marshall
   [path*]
   (promesa/->> path*

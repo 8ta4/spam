@@ -48,10 +48,6 @@
     (comp x clj->js)
     x))
 
-(def unmarshall
-  (comp (partial postwalk adapt)
-        #(js->clj % :keywordize-keys true)))
-
 (defn unmarshall
   [path*]
   (promesa/let [content (loadFile path*)]
@@ -250,7 +246,7 @@
 (def judge
   (partial invoke-agent :judge [:map
                                 [:winner [:enum "a" "b"]]
-                                [:critique [:string]]]))
+                                [:critique :string]]))
 
 (def challenge
   (partial invoke-text-agent :challenger))
@@ -258,6 +254,14 @@
 (defn toss
   []
   (zero? (rand-int 2)))
+
+(def edit
+  (partial invoke-text-agent :editor))
+
+(def gatekeep
+  (partial invoke-agent :judge [:map
+                                [:approved :boolean]
+                                [:reason :string]]))
 
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
@@ -267,7 +271,9 @@
                                                                                   :create create
                                                                                   :judge judge
                                                                                   :challenge challenge
-                                                                                  :toss toss})
+                                                                                  :toss toss
+                                                                                  :edit edit
+                                                                                  :gatekeep gatekeep})
                                                             :taskQueue task-queue
                                                             :workflowsPath (path/join (toString) "target/workflows.js")}))]
              (reset! worker* worker**)
