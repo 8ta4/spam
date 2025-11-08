@@ -16,7 +16,8 @@
   [tick "1.0"]]
 
  :builds
- {:main {:devtools {:preloads [repl]}
+ {:main {:compiler-options {:optimizations :simple}
+         :devtools {:preloads [repl]}
          :main main/main
          :output-to "target/main.js"
          :target :node-script}
