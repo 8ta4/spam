@@ -263,9 +263,9 @@
   (partial invoke-text-agent :editor))
 
 (def gatekeep
-  (partial invoke-agent :judge [:map
-                                [:approved :boolean]
-                                [:reason :string]]))
+  (partial invoke-agent :gatekeeper [:map
+                                     [:approved :boolean]
+                                     [:reason :string]]))
 
 (defn save
   [result]
