@@ -238,14 +238,14 @@
                           .-text
                           js/JSON.parse)))
 
-(defn generate
+(defn invoke-text-agent
   [agent context]
   (promesa/-> (invoke-agent agent [:map [:message :string]] context)
               (js->clj :keywordize-keys true)
               :message))
 
 (def create
-  (partial generate :creator))
+  (partial invoke-text-agent :creator))
 
 (def judge
   (partial invoke-agent :judge [:map
@@ -253,7 +253,7 @@
                                 [:critique [:string]]]))
 
 (def challenge
-  (partial generate :challenger))
+  (partial invoke-text-agent :challenger))
 
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
