@@ -8,7 +8,8 @@
   (proxyActivities (clj->js {:startToCloseTimeout (* 60 1000)})))
 
 (defn run-round
-  [context round])
+  [context round]
+  (.challenge activities (clj->js context)))
 
 (defn generate
   [context]
