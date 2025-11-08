@@ -251,6 +251,9 @@
 (def challenge
   (partial invoke-text-agent :challenger))
 
+(def edit
+  (partial invoke-text-agent :editor))
+
 (defn toss
   []
   (zero? (rand-int 2)))
