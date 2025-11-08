@@ -90,8 +90,8 @@
 (defn get-spreadsheet
   []
   (promesa/let [_ (load-config)
-                spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)
-                _ (.loadInfo spreadsheet)]
+                spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)]
+    (.loadInfo spreadsheet)
     spreadsheet))
 
 (defn initialize-spreadsheet
