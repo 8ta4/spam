@@ -75,7 +75,7 @@
   (ordered-map :endpoints [:endpoint :prospect]
                :sources [:source :prospect]
                :messages [:date :endpoint :message]
-               :runs [:timestamp :approved :endpoint :message :reason]))
+               :runs [:approved :endpoint :message :reason]))
 
 (def sample
   {:endpoints [{:endpoint "contact@example.com"
@@ -179,6 +179,10 @@
    :sources (find-sources endpoint)
    :messages (find-messages endpoint)})
 
+(defn parse-row
+  [row]
+  (remove-vals empty? (js->clj (.toObject row) :keywordize-keys true)))
+
 (defn orchestrate
   []
   (promesa/let [spreadsheet (get-spreadsheet)
@@ -188,7 +192,7 @@
                                                                             (js->clj :keywordize-keys true)
                                                                             k
                                                                             .getRows)]
-                                                       {k (map #(remove-vals empty? (js->clj (.toObject %) :keywordize-keys true)) rows)})))
+                                                       {k (map parse-row rows)})))
                                               all
                                               (apply merge))]
     (transact! conn (prepare-transaction-data spreadsheet-data))
@@ -263,6 +267,23 @@
                                 [:approved :boolean]
                                 [:reason :string]]))
 
+(defn save
+  [result]
+  (promesa/let [spreadsheet (get-spreadsheet)
+                rows (promesa/-> spreadsheet.sheetsByTitle
+                                 (js->clj :keywordize-keys true)
+                                 :runs
+                                 .getRows)
+                row (->> rows
+                         (remove (comp :message
+                                       parse-row))
+                         (filter (comp (partial = (:endpoint (js->clj result :keywordize-keys true)))
+                                       :endpoint
+                                       parse-row))
+                         first)]
+    (.assign row (clj->js (select-keys (js->clj result :keywordize-keys true) #{:approved :message :reason})))
+    (.save row)))
+
 (defstate worker
 ; https://github.com/tolitius/mount/issues/118#issuecomment-667433275
   :start (let [worker* (atom nil)]
@@ -273,7 +294,8 @@
                                                                                   :challenge challenge
                                                                                   :toss toss
                                                                                   :edit edit
-                                                                                  :gatekeep gatekeep})
+                                                                                  :gatekeep gatekeep
+                                                                                  :save save})
                                                             :taskQueue task-queue
                                                             :workflowsPath (path/join (toString) "target/workflows.js")}))]
              (reset! worker* worker**)

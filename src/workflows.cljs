@@ -36,13 +36,16 @@
                 judgment (.judge activities (clj->js context*))
                 winning-message (run-round 0 (merge context* (js->clj judgment :keywordize-keys true)))
                 edited-message (->> (js->clj context :keywordize-keys true)
-                         (setval :message winning-message)
-                         clj->js
-                         (.edit activities))]
-    (->> (js->clj context :keywordize-keys true)
-         (setval :message edited-message)
-         clj->js
-         (.gatekeep activities))))
+                                    (setval :message winning-message)
+                                    clj->js
+                                    (.edit activities))
+                decision (->> (js->clj context :keywordize-keys true)
+                              (setval :message edited-message)
+                              clj->js
+                              (.gatekeep activities))]
+    (.save activities (clj->js (merge {:endpoint (:endpoint (js->clj context :keywordize-keys true))
+                                       :message edited-message}
+                                      (js->clj decision :keywordize-keys true))))))
 
 (defn spam
   []
