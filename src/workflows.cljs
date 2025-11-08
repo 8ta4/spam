@@ -9,7 +9,8 @@
 
 (defn run-round
   [context round]
-  (.challenge activities (clj->js context)))
+  (.challenge activities (clj->js context))
+  (.toss activities))
 
 (defn generate
   [context]
