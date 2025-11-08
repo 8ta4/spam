@@ -48,10 +48,6 @@
     (comp x clj->js)
     x))
 
-(def unmarshall
-  (comp (partial postwalk adapt)
-        #(js->clj % :keywordize-keys true)))
-
 (defn unmarshall
   [path*]
   (promesa/let [content (loadFile path*)]
