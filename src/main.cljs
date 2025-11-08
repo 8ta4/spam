@@ -246,7 +246,7 @@
 (def judge
   (partial invoke-agent :judge [:map
                                 [:winner [:enum "a" "b"]]
-                                [:critique [:string]]]))
+                                [:critique :string]]))
 
 (def challenge
   (partial invoke-text-agent :challenger))
