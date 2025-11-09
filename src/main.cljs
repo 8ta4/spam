@@ -226,12 +226,11 @@
                                                                                                          0
                                                                                                          ; https://ai.google.dev/gemini-api/docs/thinking#set-budget
                                                                                                          32768)}}
-                                                             :contents (->> (js->clj context :keywordize-keys true)
-                                                                            (setval :date (date))
-                                                                            ((->> @config
-                                                                                  :prompts
-                                                                                  agent
-                                                                                  :user)))
+                                                             :contents ((->> @config
+                                                                             :prompts
+                                                                             agent
+                                                                             :user)
+                                                                        (setval :date (date) (js->clj context :keywordize-keys true)))
                                                              :model (if js/goog.DEBUG
                                                                       "gemini-2.5-flash-lite"
                                                                       "gemini-2.5-pro")}))
