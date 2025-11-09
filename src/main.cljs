@@ -213,11 +213,11 @@
   (GoogleGenAI. (clj->js {:apiKey (slurp (join (homedir) ".config/spam/google-ai-studio"))})))
 
 (defn invoke-agent
-  [agent schema context]
+  [agent response-schema context]
   (promesa/do (load-config)
               (promesa/-> client
                           (.models.generateContent (clj->js {:config {:responseMimeType "application/json"
-                                                                      :responseJsonSchema (transform schema)
+                                                                      :responseJsonSchema (transform response-schema)
                                                                       :systemInstruction (->> @config
                                                                                               :prompts
                                                                                               agent
