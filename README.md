@@ -16,6 +16,8 @@ Let's be honest: cold outreach is spam. Most of it is tasteless. Let's cook up s
 
 1. Install [Homebrew](https://brew.sh/#install).
 
+1. Install [`see`](https://github.com/8ta4/see).
+
 1. Open a terminal.
 
 1. Run this command:
@@ -126,7 +128,7 @@ After the tournament, an `editor` agent performs a single round of conservative 
 
 > Does this tool scrape pages as an anonymous bot?
 
-No. It delegates source gathering to [`see`](https://github.com/8ta4/see). `see` uses your own browser's fingerprint to gather source.
+No. It delegates source gathering to `see`. `see` uses your own browser's fingerprint to gather source.
 
 You don't need to run `see` yourself. `spam` calls `see` automatically for you, right when it's needed to gather context.
 
