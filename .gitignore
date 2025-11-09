@@ -42,3 +42,4 @@ pom.xml.asc
 
 # spam
 /config.cljs
+temporal.db

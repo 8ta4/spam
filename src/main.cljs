@@ -90,8 +90,8 @@
 (defn get-spreadsheet
   []
   (promesa/let [_ (load-config)
-                spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)
-                _ (.loadInfo spreadsheet)]
+                spreadsheet (GoogleSpreadsheet. (:spreadsheet @config) service-account-auth)]
+    (.loadInfo spreadsheet)
     spreadsheet))
 
 (defn initialize-spreadsheet
@@ -111,7 +111,7 @@
   (initialize-spreadsheet))
 
 (defstate temporal
-  :start (spawn "temporal" (clj->js ["server" "start-dev"]))
+  :start (spawn "temporal" (clj->js ["server" "start-dev" "--db-filename" "temporal.db"]))
   :stop (kill-port 8233))
 
 (def task-queue
@@ -213,11 +213,11 @@
   (GoogleGenAI. (clj->js {:apiKey (slurp (join (homedir) ".config/spam/google-ai-studio"))})))
 
 (defn invoke-agent
-  [agent schema context]
+  [agent response-schema context]
   (promesa/do (load-config)
               (promesa/-> client
                           (.models.generateContent (clj->js {:config {:responseMimeType "application/json"
-                                                                      :responseJsonSchema (transform schema)
+                                                                      :responseJsonSchema (transform response-schema)
                                                                       :systemInstruction (->> @config
                                                                                               :prompts
                                                                                               agent
@@ -226,12 +226,11 @@
                                                                                                          0
                                                                                                          ; https://ai.google.dev/gemini-api/docs/thinking#set-budget
                                                                                                          32768)}}
-                                                             :contents (->> (js->clj context :keywordize-keys true)
-                                                                            (setval :date (date))
-                                                                            ((->> @config
-                                                                                  :prompts
-                                                                                  agent
-                                                                                  :user)))
+                                                             :contents ((->> @config
+                                                                             :prompts
+                                                                             agent
+                                                                             :user)
+                                                                        (setval :date (date) (js->clj context :keywordize-keys true)))
                                                              :model (if js/goog.DEBUG
                                                                       "gemini-2.5-flash-lite"
                                                                       "gemini-2.5-pro")}))
