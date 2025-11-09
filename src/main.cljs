@@ -111,7 +111,7 @@
   (initialize-spreadsheet))
 
 (defstate temporal
-  :start (spawn "temporal" (clj->js ["server" "start-dev"]))
+  :start (spawn "temporal" (clj->js ["server" "start-dev" "--db-filename" "temporal.db"]))
   :stop (kill-port 8233))
 
 (def task-queue
