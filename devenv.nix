@@ -37,7 +37,7 @@
     shadow-cljs release main
   '';
   scripts.spam.exec = ''
-    node target/main.js $@
+    node $DEVENV_ROOT/target/main.js $@
   '';
 
   # https://devenv.sh/basics/
