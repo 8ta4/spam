@@ -39,7 +39,7 @@
 
 (def initialize-config
   (comp (partial spit path)
-        (partial string/replace (slurp "src/config.cljs") "<spreadsheet-id>")
+        (partial string/replace (slurp (path/join (toString) "src/config.cljs")) "<spreadsheet-id>")
         get-spreadsheet-id))
 
 (defn adapt
@@ -56,6 +56,7 @@
 (defn load-config
   []
   (promesa/->> "src/bridge.cljs"
+               (path/join (toString))
                unmarshall
                (reset! config)))
 
