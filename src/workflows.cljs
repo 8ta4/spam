@@ -26,7 +26,7 @@
                 context** (merge context* (js->clj judgment :keywordize-keys true))]
     (cond (= champion (get-winning-message context**)) champion
           (= round 9) (get-winning-message context**)
-          :else (promesa/recur (inc round) context**))))
+          :else (run-round (inc round) context**))))
 
 (defn generate
   [context]
