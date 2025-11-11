@@ -3,7 +3,7 @@
    ["@temporalio/workflow" :refer [executeChild proxyActivities]]
    [cats.builtin]
    [cats.core :refer [<*>]]
-   [com.rpl.specter :refer [ALL setval transform]]
+   [com.rpl.specter :refer [ALL END setval transform]]
    [promesa.core :as promesa :refer [all]]))
 
 (def activities
@@ -49,6 +49,14 @@
          clj->js
          (.save activities))))
 
+(defn map-sequential [f coll]
+  (reduce (fn [results item]
+            (promesa/let [results* results
+                          result (f item)]
+              (setval END [result] results*)))
+          (promesa/resolved [])
+          coll))
+
 (defn spam
   []
   (promesa/let [data (.orchestrate activities)
@@ -56,8 +64,7 @@
                              (mapcat :sources)
                              distinct)
                 source-content (promesa/->> sources
-                                            (map #(.see activities (clj->js %)))
-                                            all
+                                            (map-sequential #(.see activities (clj->js %)))
                                             (zipmap sources))]
     (promesa/->> (js->clj data :keywordize-keys true)
                  (map (fn [context]
