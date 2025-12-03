@@ -8,7 +8,6 @@
    [child_process :refer [exec spawn]]
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
-   [clojure.walk :refer [postwalk]]
    [com.rpl.specter :refer [setval]]
    [core :refer [path]]
    [datascript.core :refer [create-conn q transact!]]
@@ -19,10 +18,10 @@
    [malli.json-schema :refer [transform]]
    [medley.core :refer [remove-vals]]
    [mount.core :refer [defstate start]]
-   [nbb :refer [loadFile]]
    [os :refer [homedir]]
    [path :refer [join]]
    [promesa.core :as promesa :refer [all]]
+   [sci.core :refer [eval-string]]
    [tick.core :refer [date]]
    [util :refer [promisify]]))
 
@@ -42,22 +41,12 @@
         (partial string/replace (slurp (path/join (toString) "src/config.cljs")) "<spreadsheet-id>")
         get-spreadsheet-id))
 
-(defn adapt
-  [x]
-  (if (fn? x)
-    (comp x clj->js)
-    x))
-
-(defn unmarshall
-  [path*]
-  (promesa/let [content (loadFile path*)]
-    (postwalk adapt (js->clj content :keywordize-keys true))))
-
 (defn load-config
   []
-  (promesa/->> "src/bridge.cljs"
+  (promesa/->> path
                (path/join (toString))
-               unmarshall
+               slurp
+               eval-string
                (reset! config)))
 
 (def google-cloud-credentials
