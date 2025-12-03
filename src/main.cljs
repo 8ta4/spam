@@ -9,7 +9,6 @@
    [cljs-node-io.core :refer [slurp spit]]
    [clojure.string :as string :refer [split]]
    [com.rpl.specter :refer [setval]]
-   [core :refer [path]]
    [datascript.core :refer [create-conn q transact!]]
    [flatland.ordered.map :refer [ordered-map]]
    [google-auth-library :refer [JWT]]
@@ -35,6 +34,9 @@
       :path
       (split "/")
       (nth 3)))
+
+(def path
+  "config.cljs")
 
 (def initialize-config
   (comp (partial spit path)
