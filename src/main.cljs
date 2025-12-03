@@ -43,7 +43,7 @@
 
 (defn load-config
   []
-  (promesa/->> "src/config.cljs"
+  (promesa/->> path
                (path/join (toString))
                slurp
                eval-string
