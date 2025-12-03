@@ -12,6 +12,7 @@
   [lambdaisland/uri "1.19.155"]
   [metosin/malli "0.19.2"]
   [mount "0.1.23"]
+  [org.babashka/sci "0.10.49"]
   [org.flatland/ordered "1.15.12"]
   [tick "1.0"]]
 
